@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import Brand
+from django.core.exceptions import ValidationError
 from phone_field import PhoneField
 import uuid
 
@@ -58,9 +59,16 @@ class Dashboard(models.Model):
         ('M', 'Мужской'),
         ('F', 'Женский'),
     )
+
+    def validate_logotype(logotype):
+        filesize = logotype.file.size
+        megabyte_limit = 2.0
+        if filesize > megabyte_limit*1024*1024:
+            raise ValidationError("Максимальный размер файла должно быть %sMB" % str(megabyte_limit))
+
     # Направление бренда или магазина
     brand = models.OneToOneField(Brand, on_delete=models.CASCADE, verbose_name='Бренд')
-    logotype = models.ImageField(verbose_name='Логотип', upload_to='dashboard/avatar/', blank=True, null=True)
+    logotype = models.ImageField(verbose_name='Логотип', validators=[validate_logotype], upload_to='dashboard/avatar/', blank=True, null=True, help_text='Максимальный размер файла 2MB')
     branch = models.CharField(verbose_name='Отрасль', max_length=50, choices=Branch.choices, default=Branch.I_HAVEN_NOT_DECIDED_YET)
     body = models.TextField(verbose_name='О вас', max_length=300, blank=True, null=True)
 
