@@ -36,8 +36,10 @@ class Dashboard(models.Model):
         QULSARY = 'QULSARY', 'Құлсары' 
 
     class Branch(models.TextChoices):
-        BEAUTY = 'BEAUTY', 'Красота'
         CLOTHES = 'CLOTHES', 'Одежда'
+        VIRTUAL_SERVICES = 'VIRTUAL_SERVICES', 'Виртуальные сервисы'
+
+        BEAUTY = 'BEAUTY', 'Красота'
         ELECTRONICS = 'ELECTRONICS', 'Электроника'
         FURNIURE = 'FURNIURE', 'Мебель'
         CRAFTS = 'CRAFTS', 'Ремесла'
@@ -50,9 +52,8 @@ class Dashboard(models.Model):
         SPORTING = 'SPORTING', 'Спортивный'
         TOYS = 'TOYS', 'Игрушки'
         SERVICES = 'SERVICES', 'Услуги'
-        VIRTUAL_SERVICES = 'VIRTUAL_SERVICES', 'Виртуальные сервисы'
         ANOTHER = 'ANOTHER', 'Другой'
-        I_HAVEN_NOT_DECIDED_YET = 'I_HAVEN_NOT_DECIDED_YET', 'Я еще не решил' 
+        NOT_SELECTED = 'NOT_SELECTED', 'Не выбран' 
 
     GENDER_CHOICES = (
         ('N', 'Не указано'),
@@ -69,7 +70,7 @@ class Dashboard(models.Model):
     # Направление бренда или магазина
     brand = models.OneToOneField(Brand, on_delete=models.CASCADE, verbose_name='Бренд')
     logotype = models.ImageField(verbose_name='Логотип', validators=[validate_logotype], upload_to='dashboard/avatar/', blank=True, null=True, help_text='Максимальный размер файла 2MB')
-    branch = models.CharField(verbose_name='Отрасль', max_length=50, choices=Branch.choices, default=Branch.I_HAVEN_NOT_DECIDED_YET)
+    branch = models.CharField(verbose_name='Отрасль', max_length=50, choices=Branch.choices, default=Branch.NOT_SELECTED)
     body = models.TextField(verbose_name='О вас', max_length=300, blank=True, null=True)
 
     # Персональные данные
@@ -135,3 +136,4 @@ class Product(models.Model):
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
         ordering = ('-timestamp',)
+

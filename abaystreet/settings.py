@@ -26,15 +26,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_cleanup.apps.CleanupConfig',
-
     'rest_framework',
     'corsheaders',
     'djoser',
     'phone_field',
 
+    # Приложение
     'accounts.apps.AccountsConfig',
     'dashboard.apps.DashboardConfig',
-    'product.apps.ProductConfig',
+
+    # Приложение категории
+    'clothes.apps.ClothesConfig',
 ]
 
 X_FRAME_OPTIONS='SAMEORIGIN'
