@@ -1,6 +1,10 @@
 from django.contrib import admin
+from django import forms
 from .models import Sneakers, Backpacks
+from dashboard.models import Category
 
+class SneakersFormChoiseField(forms.ModelChoiceField):
+    pass
 
 class SneakersAdmin(admin.ModelAdmin):
     list_display = ('title', 'owner', 'category', 'first_price', 'last_price', )
@@ -14,6 +18,17 @@ class SneakersAdmin(admin.ModelAdmin):
     ordering = ('-timestamp',)
     filter_horizontal = ()
 
+    def formfield_for_foreignkey(self, db_field, request):
+        if db_field.name == 'category':
+            return SneakersFormChoiseField(Category.objects.filter(slug="clothing"))
+        
+        return super().formfield_for_foreignkey(db_field, request)
+
+
+
+class BackpacksFormChoiseField(forms.ModelChoiceField):
+    pass
+
 class BackpacksAdmin(admin.ModelAdmin):
     list_display = ('title', 'owner', 'category', 'first_price', 'last_price', )
     fieldsets = (
@@ -25,6 +40,13 @@ class BackpacksAdmin(admin.ModelAdmin):
     search_fields = ('title', 'body',)
     ordering = ('-timestamp',)
     filter_horizontal = ()
+
+    def formfield_for_foreignkey(self, db_field, request):
+        if db_field.name == 'category':
+            return BackpacksFormChoiseField(Category.objects.filter(slug="clothing"))
+        
+        return super().formfield_for_foreignkey(db_field, request)
+
 
 admin.site.register(Sneakers, SneakersAdmin)
 admin.site.register(Backpacks, BackpacksAdmin)
