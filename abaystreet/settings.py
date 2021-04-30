@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'dashboard.apps.DashboardConfig',
+    'product.apps.ProductConfig',
 ]
 
 X_FRAME_OPTIONS='SAMEORIGIN'
@@ -53,7 +54,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  
 ]
-
 
 # Кастомный пользовательский модель
 AUTH_USER_MODEL = 'accounts.Brand'

@@ -92,3 +92,46 @@ class Dashboard(models.Model):
     class Meta:
         verbose_name = 'Панель управление'
         verbose_name_plural = 'Панели управление'
+
+
+
+# Категория
+class Category(models.Model):
+    category_name = models.CharField(verbose_name='Название категорий', max_length=255)
+    slug = models.SlugField(verbose_name='Ключовой адрес', max_length=255, unique=True)
+    image = models.ImageField(verbose_name='Изброжение', upload_to='dashboard/categories/', blank=True, null=True)
+
+    def __str__(self):
+        return self.category_name    
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категорий'
+
+
+
+# Абстрактный модель Product
+class Product(models.Model):
+    # Описание
+    owner = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Владелец')
+    title = models.CharField(verbose_name='Заголовка', max_length=255)
+    body = models.TextField(verbose_name='Описание', blank=True, null=True)
+    picture = models.ImageField(verbose_name='Изброжения', upload_to='dashboard/products/', blank=True, null=True)
+    # Цены 
+    first_price = models.DecimalField(verbose_name='От', max_digits=8, decimal_places=2)
+    last_price = models.DecimalField(verbose_name='До', max_digits=8, decimal_places=2)
+    # Код товара
+    isbn_code = models.UUIDField(verbose_name='Коды товара(ISBN, UPC, GTIN)', unique=True, default=uuid.uuid4, editable=False)
+    # Время 
+    timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
+    # Просмотры
+    view = models.IntegerField(verbose_name='Просмотров', default=0)
+    
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        abstract = True
+        verbose_name = 'Продукт'
+        verbose_name_plural = 'Продукты'
+        ordering = ('-timestamp',)

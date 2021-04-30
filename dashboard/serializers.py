@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Dashboard
+from .models import Dashboard, Category
 from accounts.serializers import UserCreateSerializer
 
 # Admin store serializers
@@ -13,4 +13,10 @@ class DashboardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dashboard
+        fields = '__all__'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
         fields = '__all__'

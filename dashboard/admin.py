@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Dashboard
+from .models import Dashboard, Category
 
 
 class DashboradAdmin(admin.ModelAdmin):
@@ -16,6 +16,17 @@ class DashboradAdmin(admin.ModelAdmin):
     filter_horizontal = ()
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('category_name', 'image',)
+    search_fields = ('category_name',)
+    fieldsets = (
+        ('Описание категорий', {'fields': ('category_name', 'slug', 'image',)}),
+    )
+
+    ordering = ('category_name',)
+    filter_horizontal = ()
+
 
 
 admin.site.register(Dashboard, DashboradAdmin)
+admin.site.register(Category, CategoryAdmin)
