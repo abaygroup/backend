@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Dashboard, Category
+from .models import Dashboard, Category, Activity, OverviewProducts
 from accounts.serializers import UserCreateSerializer
+
 
 # Admin store serializers
 # ==========================================================
@@ -20,3 +21,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = ('message', 'created_at', )

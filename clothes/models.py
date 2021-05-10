@@ -15,8 +15,8 @@ class Clothes(Product):
         verbose_name_plural = 'Одежды'
 
 
-# Кроссовки
-class Sneakers(Clothes):
+# Обувь
+class Shoes(Clothes):
     upper_material = models.CharField(verbose_name="Материал верха", max_length=64, blank=True, null=True)
     internal_material = models.CharField(verbose_name="Внутренний материал", max_length=64, blank=True, null=True)
     sole_material = models.CharField(verbose_name="Материал подошвы", max_length=64, blank=True, null=True)
@@ -27,12 +27,14 @@ class Sneakers(Clothes):
     zip_closure = models.CharField(verbose_name="Застежка", max_length=64, blank=True, null=True)
     article_number = models.CharField(verbose_name="Артикул", max_length=64, blank=True, null=True)
 
+
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = 'Кроссовка'
-        verbose_name_plural = 'Кроссовки'
+        verbose_name = 'Обувь'
+        verbose_name_plural = 'Обувь'
+
 # ============================================================
 
 
@@ -51,10 +53,12 @@ class Backpacks(Clothes):
     zip_closure = models.CharField(verbose_name="Застежка", max_length=64, blank=True, null=True)
     article_number = models.CharField(verbose_name="Артикул", max_length=64, blank=True, null=True)
 
+
     def __str__(self):
         return self.title
 
     class Meta: 
         verbose_name = "Рюкзак и сумку"
         verbose_name_plural = "Рюкзаки и сумки"
+
 # ============================================================

@@ -3,6 +3,9 @@ from accounts.models import Brand
 from django.core.exceptions import ValidationError
 from phone_field import PhoneField
 import uuid
+import datetime
+from django.utils import timezone
+from django.contrib.contenttypes.models import ContentType
 
 
 # Модель Adminstore
@@ -111,6 +114,21 @@ class Category(models.Model):
 
 
 
+
+# Недавняя активность
+class Activity(models.Model):
+    message = models.CharField(verbose_name="Сообщение", max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expiration_date = models.DateTimeField()
+
+    def __str__(self):
+        return self.message
+
+    class Meta:
+        verbose_name = 'Активность'
+        verbose_name_plural = 'Активности'
+
+
 # Абстрактный модель Product
 class Product(models.Model):
     # Описание
@@ -128,12 +146,42 @@ class Product(models.Model):
     # Просмотры
     view = models.IntegerField(verbose_name='Просмотров', default=0)
     
+
     def __str__(self):
         return self.title
+
+
+    def save(self, *args, **kwargs):
+        instance = self.title
+        activity = Activity.objects.create(message="Вы импортировали продукт {}".format(instance), expiration_date=timezone.now() + datetime.timedelta(hours=1))
+        activity.save()
+        super(Product, self).save(*args, **kwargs)
+
+    
 
     class Meta:
         abstract = True
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
         ordering = ('-timestamp',)
+
+
+
+class OverviewProductsManager:
+    
+    @staticmethod
+    def get_overview_products(*args, **kwargs):
+        request = kwargs['request']
+        products = []
+        ct_models = ContentType.objects.filter(model__in=args)
+        for ct_model in ct_models:
+            model_products = ct_model.model_class()._base_manager.filter(owner=request)
+            products.extend(model_products)
+
+        return products
+
+
+class OverviewProducts:
+
+    objects = OverviewProductsManager()
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Dashboard, Category
+from .models import Dashboard, Category, Activity
 
 
 class DashboradAdmin(admin.ModelAdmin):
@@ -30,3 +30,4 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Dashboard, DashboradAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Activity)
