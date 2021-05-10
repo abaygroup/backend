@@ -117,6 +117,7 @@ class Category(models.Model):
 
 # Недавняя активность
 class Activity(models.Model):
+    owner = models.ForeignKey(Brand, on_delete=models.CASCADE)
     message = models.CharField(verbose_name="Сообщение", max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     expiration_date = models.DateTimeField()
@@ -145,7 +146,6 @@ class Product(models.Model):
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
     # Просмотры
     view = models.IntegerField(verbose_name='Просмотров', default=0)
-    
 
     def __str__(self):
         return self.title
@@ -153,7 +153,7 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         instance = self.title
-        activity = Activity.objects.create(message="Вы импортировали продукт {}".format(instance), expiration_date=timezone.now() + datetime.timedelta(hours=1))
+        activity = Activity.objects.create(owner=self.owner, message="Вы импортировали продукт {}".format(instance), expiration_date=timezone.now() + datetime.timedelta(weeks=4))
         activity.save()
         super(Product, self).save(*args, **kwargs)
 
