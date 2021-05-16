@@ -34,9 +34,7 @@ INSTALLED_APPS = [
     # Приложение
     'accounts.apps.AccountsConfig',
     'dashboard.apps.DashboardConfig',
-
-    # Приложение категории
-    'clothes.apps.ClothesConfig',
+    'products.apps.ProductsConfig',
 ]
 
 X_FRAME_OPTIONS='SAMEORIGIN'

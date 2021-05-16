@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Dashboard, Category, Activity, OverviewProducts
+from .models import Dashboard
 from accounts.serializers import UserCreateSerializer
 
 
@@ -16,14 +16,3 @@ class DashboardSerializer(serializers.ModelSerializer):
         model = Dashboard
         fields = '__all__'
 
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = '__all__'
-
-
-class ActivitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Activity
-        fields = ('message', 'created_at', )

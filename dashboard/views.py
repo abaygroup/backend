@@ -1,14 +1,14 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import views
-from rest_framework.generics import GenericAPIView
-from rest_framework import status, permissions, response
+from rest_framework import status, permissions
 from rest_framework.response import Response
 
-from .models import Dashboard, Activity, Product, OverviewProducts
-from .serializers import DashboardSerializer, ActivitySerializer
+from .models import Dashboard
+from products.models import Activity, Product
+from .serializers import DashboardSerializer
+from products.serializers import ActivitySerializer, ProductSerializer, FeatureSerializer, AISerializer
 
 from django.utils import timezone
-from django.core import serializers
 
 
 # Главная страница панель управления
@@ -26,18 +26,17 @@ class DashboardView(views.APIView):
                 activity.delete()
         
         # Продукты
-        overview_products = OverviewProducts.objects.get_overview_products('shoes', 'backpacks', request=request.user)
-        products = sorted(overview_products, key=lambda instance: instance.timestamp, reverse=True)[:3]
+        products = Product.objects.filter(owner=request.user)
 
         # Сериализировать
         activities_serializer = ActivitySerializer(activities, many=True)
         dashboard_serializer = DashboardSerializer(dashboard, context={"request": request})
-        products = serializers.serialize('json', products, fields=["title", "isbn_code", "timestamp"])
+        products = ProductSerializer(products, context={"request": request}, many=True)
        
         context = {
             'dashboard': dashboard_serializer.data,
             'activities': activities_serializer.data,
-            'products': products
+            'products': products.data
         }
         return Response(context, status=status.HTTP_200_OK)
 
@@ -66,19 +65,41 @@ class ActivityView(views.APIView):
         return Response(context, status=status.HTTP_200_OK)
 
 
+
+# Список товаров
+# ==================================================================
 class ProductsView(views.APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request): 
         dashboard = get_object_or_404(Dashboard, brand=request.user)
-        overview_products = OverviewProducts.objects.get_overview_products('shoes', 'backpacks', request=request.user)
+        products = Product.objects.filter(owner=request.user)
         
-        products = sorted(overview_products, key=lambda instance: instance.timestamp, reverse=True)
-        products = serializers.serialize('json', products)
+        products_serializer = ProductSerializer(products, context={"request": request}, many=True)
         dashboard_serializer = DashboardSerializer(dashboard, context={"request": request})
 
         context = {
             'dashboard': dashboard_serializer.data,
-            'products': products,
+            'products': products_serializer.data,
         }
+        return Response(context, status=status.HTTP_200_OK)
+
+
+class ProductDetailView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get(self, request, owner, isbn_code):
+        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
+        features = product.features_set.all()
+        additionalImage = product.additionalimage_set.all()
+        product_serializer = ProductSerializer(product, context={"request": request}, partial=True)
+        features_serializer = FeatureSerializer(features, many=True)
+        ai_serializer = AISerializer(additionalImage, context={"request": request}, many=True)
+
+        context = {
+            "products": product_serializer.data,
+            "features": features_serializer.data,
+            "ai": ai_serializer.data
+        }
+
         return Response(context, status=status.HTTP_200_OK)

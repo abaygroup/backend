@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from .models import Shoes, Backpacks
-from dashboard.models import Category
+from products.models import Category
 
 class ShoesFormChoiseField(forms.ModelChoiceField):
     pass

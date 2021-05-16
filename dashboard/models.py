@@ -2,10 +2,6 @@ from django.db import models
 from accounts.models import Brand
 from django.core.exceptions import ValidationError
 from phone_field import PhoneField
-import uuid
-import datetime
-from django.utils import timezone
-from django.contrib.contenttypes.models import ContentType
 
 
 # Модель Adminstore
@@ -99,89 +95,5 @@ class Dashboard(models.Model):
 
 
 
-# Категория
-class Category(models.Model):
-    category_name = models.CharField(verbose_name='Название категорий', max_length=255)
-    slug = models.SlugField(verbose_name='Ключовой адрес', max_length=255, unique=True)
-    image = models.ImageField(verbose_name='Изброжение', upload_to='dashboard/categories/', blank=True, null=True)
 
-    def __str__(self):
-        return self.category_name    
-
-    class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категорий'
-
-
-
-
-# Недавняя активность
-class Activity(models.Model):
-    owner = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    message = models.CharField(verbose_name="Сообщение", max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    expiration_date = models.DateTimeField()
-
-    def __str__(self):
-        return self.message
-
-    class Meta:
-        verbose_name = 'Активность'
-        verbose_name_plural = 'Активности'
-
-
-# Абстрактный модель Product
-class Product(models.Model):
-    # Описание
-    owner = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Владелец')
-    title = models.CharField(verbose_name='Заголовка', max_length=255)
-    body = models.TextField(verbose_name='Описание', blank=True, null=True)
-    picture = models.ImageField(verbose_name='Изброжения', upload_to='dashboard/products/', blank=True, null=True)
-    # Цены 
-    first_price = models.DecimalField(verbose_name='От', max_digits=8, decimal_places=2)
-    last_price = models.DecimalField(verbose_name='До', max_digits=8, decimal_places=2)
-    # Код товара
-    isbn_code = models.UUIDField(verbose_name='Коды товара(ISBN, UPC, GTIN)', unique=True, default=uuid.uuid4, editable=False)
-    # Время 
-    timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
-    # Просмотры
-    view = models.IntegerField(verbose_name='Просмотров', default=0)
-
-    def __str__(self):
-        return self.title
-
-
-    def save(self, *args, **kwargs):
-        instance = self.title
-        activity = Activity.objects.create(owner=self.owner, message="Вы импортировали продукт {}".format(instance), expiration_date=timezone.now() + datetime.timedelta(weeks=4))
-        activity.save()
-        super(Product, self).save(*args, **kwargs)
-
-    
-
-    class Meta:
-        abstract = True
-        verbose_name = 'Продукт'
-        verbose_name_plural = 'Продукты'
-        ordering = ('-timestamp',)
-
-
-
-class OverviewProductsManager:
-    
-    @staticmethod
-    def get_overview_products(*args, **kwargs):
-        request = kwargs['request']
-        products = []
-        ct_models = ContentType.objects.filter(model__in=args)
-        for ct_model in ct_models:
-            model_products = ct_model.model_class()._base_manager.filter(owner=request)
-            products.extend(model_products)
-
-        return products
-
-
-class OverviewProducts:
-
-    objects = OverviewProductsManager()
 
