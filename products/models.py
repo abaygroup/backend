@@ -58,9 +58,16 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         instance = self.title
         activity = Activity.objects.create(owner=self.owner, message="Вы импортировали продукт {}".format(instance),
-                                           expiration_date=timezone.now() + datetime.timedelta(weeks=4))
-        activity.save()
+                                           expiration_date=timezone.now() + datetime.timedelta(weeks=1))
+        if self.title:
+            activity.save()
+
+        if self.picture or self.body:
+            activity.message = "Вы изменили продукт {}".format(instance)
+            activity.save()
+
         super(Product, self).save(*args, **kwargs)
+
 
     class Meta:
         verbose_name = 'Продукт'

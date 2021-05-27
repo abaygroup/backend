@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.generics import views
 from rest_framework import status, permissions
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import Dashboard
 from products.models import Activity, Product
@@ -29,7 +30,7 @@ class DashboardOverviewView(views.APIView):
                 activity.delete()
         
         # Продукты
-        products = Product.objects.filter(owner=request.user)
+        products = Product.objects.filter(owner=request.user)[:3]
 
         # Сериализировать
         activities_serializer = ActivitySerializer(activities, many=True)
@@ -48,6 +49,7 @@ class DashboardOverviewView(views.APIView):
 # ==================================
 class ActivityView(views.APIView):
     permission_classes = [permissions.IsAuthenticated, ]
+    parser_classes = [MultiPartParser, FormParser, ]
 
     def get(self, request):
         dashboard = get_object_or_404(Dashboard, brand=request.user)
@@ -75,6 +77,7 @@ class ActivityView(views.APIView):
 # Список продукты
 class ProductsView(views.APIView):
     permission_classes = [permissions.IsAuthenticated, ]
+    parser_classes = [MultiPartParser, FormParser, ]
 
     def get(self, request): 
         products = Product.objects.filter(owner=request.user)
@@ -82,7 +85,7 @@ class ProductsView(views.APIView):
         return Response(products_serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        product_serializer = ProductListSerializer(data=request.data)
+        product_serializer = ProductDetailSerializer(data=request.data)
         if product_serializer.is_valid():
             product_serializer.save(owner=request.user, category=request.user.dashboard.branch)
             return Response(product_serializer.data, status=status.HTTP_201_CREATED)
@@ -92,6 +95,7 @@ class ProductsView(views.APIView):
 # Профиль продукта
 class ProductDetailView(views.APIView):
     permission_classes = [permissions.IsAuthenticated, ]
+    parser_classes = [MultiPartParser, FormParser, ]
 
     def get(self, request, owner, isbn_code):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
@@ -126,6 +130,8 @@ class ProductDetailView(views.APIView):
 
 # Характеристики
 class FeaturesView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    
     def post(self, request, owner, isbn_code):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         features_serializer = FeatureSerializer(data=request.data)
@@ -137,6 +143,8 @@ class FeaturesView(views.APIView):
 
 
 class FeatureDetailView(views.APIView):
+    parser_classes = [MultiPartParser, FormParser, ]
+
     def put(self, request, owner, isbn_code, pk):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         feature = product.features_set.get(pk=pk)
@@ -156,6 +164,8 @@ class FeatureDetailView(views.APIView):
 
 # Дополнительный иллюстрации
 class AIView(views.APIView):
+    parser_classes = [MultiPartParser, FormParser, ]
+
     def post(self, request, owner, isbn_code):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         ai_serializer = AISerializer(data=request.data)
@@ -167,6 +177,8 @@ class AIView(views.APIView):
 
 
 class AIDetailView(views.APIView):
+    parser_classes = [MultiPartParser, FormParser, ]
+
     def put(self, request, owner, isbn_code, pk):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         ai = product.additionalimage_set.get(pk=pk)
