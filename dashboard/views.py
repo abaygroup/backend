@@ -69,6 +69,10 @@ class ActivityView(views.APIView):
 
         return Response(context, status=status.HTTP_200_OK)
 
+    def delete(self, request):
+        activities = Activity.objects.all().delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 # Продукты
