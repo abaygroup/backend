@@ -13,6 +13,7 @@ from products.serializers import (
     FeatureSerializer, AISerializer)
 
 from django.utils import timezone
+from django.db.models import Q
 
 
 # Главная страница панель управления
@@ -85,7 +86,13 @@ class ProductsView(views.APIView):
 
     def get(self, request): 
         products = Product.objects.filter(owner=request.user)
-        products_serializer = ProductListSerializer(products, context={"request": request}, many=True)
+        if 'search' in request.GET:
+            search = request.GET.get('search')
+            q = Q(title__icontains=search) | Q(body__icontains=search)
+            qs = products.filter(q)
+            products_serializer = ProductListSerializer(qs, context={"request": request}, many=True)
+        else:
+            products_serializer = ProductListSerializer(products, context={"request": request}, many=True)
         return Response(products_serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):

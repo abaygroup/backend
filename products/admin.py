@@ -28,9 +28,11 @@ class AdditionalImageTable(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('title', 'owner', 'first_price', 'last_price', 'timestamp',)
     fieldsets = (
-        ('Описание товара', {'fields': ('title', 'owner', 'category', 'picture', 'body',)}),
+        ('Описание товара', {'fields': ('title', 'brand', 'owner', 'category', 'picture', 'body',)}),
         ('Цены', {'fields': ('first_price', 'last_price',)}),
+        ('Продакшен', {'fields': ('production',)})
     )
+    list_filter = ('production',)
     search_fields = ('title', 'body', 'category',)
     ordering = ('-timestamp',)
     inlines = [ FeaturesTable, AdditionalImageTable ]

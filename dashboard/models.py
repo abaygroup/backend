@@ -92,8 +92,3 @@ class Dashboard(models.Model):
     class Meta:
         verbose_name = 'Панель управление'
         verbose_name_plural = 'Панели управление'
-
-
-
-
-

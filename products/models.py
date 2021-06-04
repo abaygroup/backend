@@ -38,6 +38,7 @@ class Product(models.Model):
     # Описание
     owner = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Владелец')
     title = models.CharField(verbose_name='Заголовка', max_length=255)
+    brand = models.CharField(verbose_name="Бренд", max_length=255)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     body = models.TextField(verbose_name='Описание', blank=True, null=True)
     picture = models.ImageField(verbose_name='Изброжения', upload_to='dashboard/products/', blank=True, null=True)
@@ -49,6 +50,10 @@ class Product(models.Model):
                                  editable=False)
     # Время
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
+
+    # Продакшен
+    production = models.BooleanField(verbose_name="Публикация", default=False)
+
     # Просмотры
     view = models.IntegerField(verbose_name='Просмотров', default=0)
 
