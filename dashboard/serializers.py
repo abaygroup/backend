@@ -15,9 +15,9 @@ class DashboardOverviewSerializer(serializers.ModelSerializer):
 
 
 class DashboardSerializer(serializers.ModelSerializer):
-    brand = UserCreateSerializer()
+    brand = UserCreateSerializer(read_only=True)
     gender = serializers.CharField(source='get_gender_display')
-    branch = CategorySerializer()
+    branch = CategorySerializer(read_only=True)
     city = serializers.CharField(source='get_city_display')
 
     class Meta:

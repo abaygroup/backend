@@ -46,6 +46,27 @@ class DashboardOverviewView(views.APIView):
         return Response(context, status=status.HTTP_200_OK)
 
 
+class DashboardView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    parser_classes = [MultiPartParser, FormParser, ]
+
+    def get(self, request):
+        dashboard = get_object_or_404(Dashboard, brand=request.user)
+        dashboard_serializer = DashboardSerializer(dashboard, context={"request": request})
+
+        return Response(dashboard_serializer.data, status=status.HTTP_200_OK)
+
+    
+    def put(self, request):
+        dashboard = get_object_or_404(Dashboard, brand=request.user)
+        dashboard_serializer = DashboardSerializer(dashboard, data=request.data)
+        if dashboard_serializer.is_valid():
+            dashboard_serializer.save(brand=request.user, branch=request.user.dashboard.branch)
+            return Response(dashboard_serializer.data)
+        return Response(dashboard_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# ==================================
+
 # Список активности
 # ==================================
 class ActivityView(views.APIView):
