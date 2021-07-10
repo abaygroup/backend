@@ -44,10 +44,6 @@ class Brand(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.brandname
 
-    def delete(self, *args, **kwargs):
-        for product in self.product_set.all():
-            product.delete()
-        super().delete(*args, **kwarg)
 
     class Meta:
         verbose_name = 'Аккаунт'

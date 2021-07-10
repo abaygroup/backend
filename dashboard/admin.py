@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Dashboard
+from .models import Dashboard, Notification
 
 
 class DashboradAdmin(admin.ModelAdmin):
@@ -7,7 +7,7 @@ class DashboradAdmin(admin.ModelAdmin):
     list_filter = ('for_clients',)
     fieldsets = (
         ('Направление бренда или магазина', {'fields': ('brand', 'logotype', 'branch',)}),
-        ('Персональные данные', {'fields': ('first_name', 'last_name', 'gender', 'city', 'phone', 'reserve_email', 'website')}),
+        ('Персональные данные', {'fields': ('first_name', 'last_name', 'gender', 'city', 'phone', 'address', 'reserve_email', 'website')}),
         ('Статусы', {'fields': ('for_clients', 'branding',)}),
     )
 
@@ -17,3 +17,4 @@ class DashboradAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Dashboard, DashboradAdmin)
+admin.site.register(Notification)

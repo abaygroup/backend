@@ -3,10 +3,10 @@ from .models import Category, Activity, Product, Features, AdditionalImage
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('category_name', 'image',)
+    list_display = ('category_name', )
     search_fields = ('category_name',)
     fieldsets = (
-        ('Описание категорий', {'fields': ('category_name', 'slug', 'image',)}),
+        ('Описание категорий', {'fields': ('category_name', 'slug',)}),
     )
 
     ordering = ('category_name',)

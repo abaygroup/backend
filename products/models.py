@@ -8,7 +8,6 @@ from accounts.models import Brand
 class Category(models.Model):
     category_name = models.CharField(verbose_name='Название категорий', max_length=255)
     slug = models.SlugField(verbose_name='Ключовой адрес', max_length=255, unique=True)
-    image = models.ImageField(verbose_name='Изброжение', upload_to='dashboard/categories/', blank=True, null=True)
 
     def __str__(self):
         return self.category_name
