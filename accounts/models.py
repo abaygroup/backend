@@ -23,6 +23,7 @@ class BrandManager(BaseUserManager):
         store.save()
         return store
 
+
 # Our Store model
 class Brand(AbstractBaseUser, PermissionsMixin):
     brandname = models.CharField(verbose_name=_('Имя бренда'), max_length=64, unique=True)

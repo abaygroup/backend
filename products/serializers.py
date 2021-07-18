@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from accounts.serializers import UserCreateSerializer
-from .models import Category, Activity, Product, Features, AdditionalImage
+from .models import Category, Activity, Product, Features, AdditionalImage, Videohosting, Multilink
 
 
 # Serializer для Категорий
@@ -27,7 +27,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields= ("title", "owner", "picture", "body", "isbn_code", "production", "view", "timestamp",)
+        fields= ("title", "owner", "picture", "body", "isbn_code", "production", "view", "timestamp", "last_update")
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -42,6 +42,18 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
 # Serializer для Характеристика и Дополнительный иллюстраций
 # ========================================================
+class VideohostingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Videohosting
+        fields = ('id', 'title', 'body', 'frame_url', 'access', 'timestamp',)
+
+
+class MultiLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Multilink
+        fields = ("id", "link",)
+
+
 class FeatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Features

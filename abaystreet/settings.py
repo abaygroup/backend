@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'phone_field',
 
     # Приложение
+    'main.apps.MainConfig',
     'accounts.apps.AccountsConfig',
     'dashboard.apps.DashboardConfig',
     'products.apps.ProductsConfig',
@@ -164,13 +165,14 @@ EMAIL_USE_TLS = True
 # Настройка Simple JWT
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
-   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+   'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 # Настройка Djoser 
 DOMAIN = ('localhost:3000') 
-SITE_NAME = ('localhost:3000') 
+SITE_NAME = ('localhost:3000')
+
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
