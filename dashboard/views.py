@@ -4,11 +4,11 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 
-from .models import Dashboard
+from .models import Dashboard, Notification
 from products.models import Activity, Product
 from accounts.models import Brand
 
-from .serializers import DashboardSerializer, DashboardFormSerializer, DashboardOverviewSerializer, NotificationSerializer
+from .serializers import DashboardSerializer, DashboardFormSerializer, DashboardOverviewSerializer, NotificationSerializer, NotificationFormSerializer
 from products.serializers import ( ActivitySerializer, ProductOverviewSerializer )
 
 from django.utils import timezone
@@ -93,9 +93,11 @@ class ActivityView(views.APIView):
         activities = Activity.objects.all().delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# ==================================
 
 
-# Notifications view
+# Список уведомление
+# ==================================
 class NotificationView(views.APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
@@ -108,8 +110,29 @@ class NotificationView(views.APIView):
     def post(self, request):
         admin = get_object_or_404(Brand, is_superuser=True)
         brand = request.user
-        n_serializer = NotificationSerializer(data=request.data)
+        n_serializer = NotificationFormSerializer(data=request.data)
         if n_serializer.is_valid():
             n_serializer.save(from_send=admin, to_send=brand)
             return Response(n_serializer.data)
 
+
+class NotificationCountView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get(self, request):
+        notification = request.user.notification_set.filter(checked=False).count()
+        return Response({'nochecked_count': notification})
+
+
+
+class AccessMessageView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def post(self, request, id):
+        notification = get_object_or_404(Notification, id=id)
+
+        notification.checked = True
+        notification.save()
+        return Response({'checked': notification.checked}, status=status.HTTP_201_CREATED)
+
+# ==================================

@@ -8,6 +8,8 @@ urlpatterns = [
     path('owner/', dashboard_view.DashboardView.as_view()),
     path('activities/', dashboard_view.ActivityView.as_view()),
     path('notification/', dashboard_view.NotificationView.as_view()),
+    path('notification/count/', dashboard_view.NotificationCountView.as_view()),
+    path('notification/<int:id>/', dashboard_view.AccessMessageView.as_view()),
 
     # Product urls
     path('products/', product_view.ProductsView.as_view()),

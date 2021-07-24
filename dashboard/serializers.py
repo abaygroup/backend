@@ -46,3 +46,11 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
+
+class NotificationFormSerializer(serializers.ModelSerializer):
+    to_send = UserCreateSerializer(read_only=True)
+    from_send = UserCreateSerializer(read_only=True)
+
+    class Meta:
+        model = Notification
+        exclude = ('checked',)

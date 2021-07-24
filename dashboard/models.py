@@ -84,6 +84,8 @@ class Notification(models.Model):
     from_send = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Кому')
     date_send = models.DateTimeField(verbose_name='Дата отправление', auto_now_add=True)
 
+    checked = models.BooleanField(verbose_name='Проверка', default=False)
+
     def __str__(self):
         return 'Отправлено из {} на {}'.format(self.to_send, self.from_send)
 
