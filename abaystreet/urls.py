@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+
     path('api/', include('main.urls')),
     path('', include('dashboard.urls')),
     path('accounts/', include('accounts.urls')),
