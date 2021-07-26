@@ -21,10 +21,14 @@ class ProductsView(views.APIView):
 
     def get(self, request):
         products = Product.objects.filter(owner=request.user)
-        if 'search' in request.GET:
+        if 'search' in request.GET or 'production' in request.GET:
             search = request.GET.get('search')
-            q = Q(title__icontains=search) | Q(body__icontains=search)
-            qs = products.filter(q)
+            production = request.GET.get('production')
+
+            name = Q(title__icontains=search) | Q(body__icontains=search)
+            check = Q(production=production.capitalize())
+            qs = products.filter(check).filter(name)
+
             products_serializer = ProductListSerializer(qs, context={"request": request}, many=True)
         else:
             products_serializer = ProductListSerializer(products, context={"request": request}, many=True)
@@ -80,6 +84,17 @@ class ProductDetailView(views.APIView):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class DeletePictureView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def delete(self, request, owner, isbn_code):
+        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
+        product.picture.delete()
+        return Response({'deleted': True}, status=status.HTTP_204_NO_CONTENT)
+
+
 
 
 # Видеохостинг

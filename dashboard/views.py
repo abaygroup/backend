@@ -10,6 +10,7 @@ from accounts.models import Brand
 
 from .serializers import DashboardSerializer, DashboardFormSerializer, DashboardOverviewSerializer, NotificationSerializer, NotificationFormSerializer
 from products.serializers import ( ActivitySerializer, ProductOverviewSerializer )
+from main.serializers import Post, PostSerializer
 
 from django.utils import timezone
 
@@ -63,7 +64,16 @@ class DashboardView(views.APIView):
             return Response(dashboard_serializer.data)
         return Response(dashboard_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class DeleteLogoView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def delete(self, request):
+        logotype = request.user.dashboard.logotype
+        logotype.delete()
+        return Response({'deleted': True}, status=status.HTTP_204_NO_CONTENT)
 # ==================================
+
 
 # Список активности
 # ==================================
@@ -73,6 +83,7 @@ class ActivityView(views.APIView):
 
     def get(self, request):
         dashboard = get_object_or_404(Dashboard, brand=request.user)
+        admin = get_object_or_404(Brand, is_superuser=True)
         # Проверка срок активности (Не больше 1 месяц)
         activities = Activity.objects.filter(owner=request.user).order_by('-created_at')
         for activity in activities:
@@ -82,9 +93,11 @@ class ActivityView(views.APIView):
         # Сериализировать
         activities_serializer = ActivitySerializer(activities, many=True)
         dashboard_serializer = DashboardOverviewSerializer(dashboard, context={"request": request})
+        post_serializer = PostSerializer(Post.objects.filter(owner=admin), many=True)
         context = {
             'dashboard': dashboard_serializer.data,
             'activities': activities_serializer.data,
+            'posts': post_serializer.data
         }
 
         return Response(context, status=status.HTTP_200_OK)
