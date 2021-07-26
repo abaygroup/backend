@@ -11,7 +11,7 @@ class DashboardOverviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dashboard
-        fields = ("id", "brand", "logotype", "website", "branding")
+        fields = ("id", "brand", "branch", "logotype", "website", "branding")
 
 
 
