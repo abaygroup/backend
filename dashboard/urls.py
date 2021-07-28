@@ -4,7 +4,7 @@ from products import views as product_view
 
 urlpatterns = [
     # Dashboard urls
-    path('', dashboard_view.DashboardOverviewView.as_view()),
+    path('', dashboard_view.DashboardOverview.as_view()),
     path('owner/', dashboard_view.DashboardView.as_view()),
     path('owner/logo/', dashboard_view.DeleteLogoView.as_view()),
 
@@ -25,7 +25,4 @@ urlpatterns = [
     # Videhosting
     path('product/<owner>/<isbn_code>/videohosting/', product_view.VidehostingView.as_view()),
     path('product/<owner>/<isbn_code>/video/<int:pk>/', product_view.VidehostingDetailView.as_view()),
-    path('product/<owner>/<isbn_code>/video/<int:video_pk>/links/', product_view.MultiLinkView.as_view()),
-    path('product/<owner>/<isbn_code>/video/<int:video_pk>/link/<int:pk>/', product_view.MultiLinkDetailView.as_view())
-
 ]

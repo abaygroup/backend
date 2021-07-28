@@ -4,10 +4,10 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 
-from products.models import Product, Videohosting
+from products.models import Product, SubCategory
 from products.serializers import ( ProductListSerializer, ProductDetailSerializer,
                                    FeatureSerializer, AISerializer,
-                                   VideohostingSerializer, MultiLinkSerializer)
+                                   VideohostingSerializer)
 
 from django.db.models import Q
 
@@ -23,12 +23,8 @@ class ProductsView(views.APIView):
         products = Product.objects.filter(owner=request.user)
         if 'search' in request.GET or 'production' in request.GET:
             search = request.GET.get('search')
-            production = request.GET.get('production')
-
-            name = Q(title__icontains=search) | Q(body__icontains=search)
-            check = Q(production=production.capitalize())
-            qs = products.filter(check).filter(name)
-
+            q = Q(title__icontains=search) | Q(body__icontains=search)
+            qs = products.filter(q)
             products_serializer = ProductListSerializer(qs, context={"request": request}, many=True)
         else:
             products_serializer = ProductListSerializer(products, context={"request": request}, many=True)
@@ -36,9 +32,10 @@ class ProductsView(views.APIView):
 
     def post(self, request):
         if request.user.dashboard.branding == True:
+            subcategory = get_object_or_404(SubCategory, slug=request.data['subcategory'])
             product_serializer = ProductDetailSerializer(data=request.data)
             if product_serializer.is_valid():
-                product_serializer.save(owner=request.user, category=request.user.dashboard.branch)
+                product_serializer.save(owner=request.user, category=request.user.dashboard.branch, subcategory=subcategory)
                 return Response(product_serializer.data, status=status.HTTP_201_CREATED)
 
             return Response(product_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -73,9 +70,10 @@ class ProductDetailView(views.APIView):
 
     def put(self, request, owner, isbn_code):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
+        subcategory = get_object_or_404(SubCategory, slug=request.data['subcategory'])
         product_serializer = ProductDetailSerializer(product, data=request.data)
         if product_serializer.is_valid():
-            product_serializer.save()
+            product_serializer.save(subcategory=subcategory)
             return Response(product_serializer.data)
         return Response(product_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -117,12 +115,9 @@ class VidehostingDetailView(views.APIView):
     def get(self, request, owner, isbn_code, pk):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         video = product.videohosting_set.get(pk=pk)
-        links = video.multilink_set.all()
         video_serializer = VideohostingSerializer(video)
-        links_serializer = MultiLinkSerializer(links, many=True)
         context = {
             'video': video_serializer.data,
-            'multilinks': links_serializer.data
         }
         return Response(context, status=status.HTTP_200_OK)
 
@@ -142,43 +137,8 @@ class VidehostingDetailView(views.APIView):
         video.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class MultiLinkView(views.APIView):
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    def post(self, request, owner, isbn_code, video_pk):
-        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
-        video = get_object_or_404(Videohosting, product=product, pk=video_pk)
-        link_serializer = MultiLinkSerializer(data=request.data)
-        if link_serializer.is_valid():
-            link_serializer.save(videohosting=video)
-            return Response(link_serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(link_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class MultiLinkDetailView(views.APIView):
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    def put(self, request, owner, isbn_code, video_pk, pk):
-        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
-        video = get_object_or_404(Videohosting, product=product, pk=video_pk)
-        link = video.multilink_set.get(pk=pk)
-        link_serializer = MultiLinkSerializer(link, data=request.data)
-        if link_serializer.is_valid():
-            link_serializer.save()
-            return Response(link_serializer.data)
-
-        return Response(link_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, owner, isbn_code, video_pk, pk):
-        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
-        video = get_object_or_404(Videohosting, product=product, pk=video_pk)
-        link = video.multilink_set.get(pk=pk)
-        link.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 # ================================
+
 
 # Характеристики
 class FeaturesView(views.APIView):

@@ -24,7 +24,7 @@ class BrandManager(BaseUserManager):
         return store
 
 
-# Our Store model
+# Brand модель
 class Brand(AbstractBaseUser, PermissionsMixin):
     brandname = models.CharField(verbose_name=_('Имя бренда'), max_length=64, unique=True)
     email = models.EmailField(verbose_name=_('email address'), max_length=255, unique=True)

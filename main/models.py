@@ -1,7 +1,7 @@
 from django.db import models
 from accounts.models import Brand
 
-# Create your models here.
+
 class Post(models.Model):
     title = models.CharField(verbose_name='Название', max_length=64)
     description = models.TextField(verbose_name='Описание')

@@ -1,16 +1,7 @@
 from rest_framework import serializers
 from accounts.serializers import UserCreateSerializer
-from .models import Category, Activity, Product, Features, AdditionalImage, Videohosting, Multilink
-
-
-# Serializer для Категорий
-# ========================================================
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = '__all__'
-# ========================================================
-
+from .models import Activity, Product, Features, AdditionalImage, Videohosting
+from dashboard.serializers import SuperCategorySerializer, SubCategorySerializer
 
 # Serializer для Продукт
 # ========================================================
@@ -32,7 +23,8 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     owner = UserCreateSerializer(read_only=True)
-    category = CategorySerializer(read_only=True)
+    category = SuperCategorySerializer(read_only=True)
+    subcategory = SubCategorySerializer(read_only=True)
 
     class Meta:
         model = Product
@@ -47,11 +39,6 @@ class VideohostingSerializer(serializers.ModelSerializer):
         model = Videohosting
         fields = ('id', 'title', 'body', 'frame_url', 'access', 'timestamp',)
 
-
-class MultiLinkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Multilink
-        fields = ("id", "link",)
 
 
 class FeatureSerializer(serializers.ModelSerializer):

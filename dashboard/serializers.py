@@ -1,24 +1,37 @@
 from rest_framework import serializers
-from .models import Dashboard, Notification
+from .models import Dashboard, Notification, SubCategory, SuperCategory
 from accounts.serializers import UserCreateSerializer
-from products.serializers import CategorySerializer
+
+
+# Serializer для Категорий
+# ========================================================
+class SuperCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SuperCategory
+        fields = ('id', 'name', 'slug',)
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = ('id', 'name', 'slug',)
+# ========================================================
+
 
 # Serializer для панель управления
 # ==========================================================
-
 class DashboardOverviewSerializer(serializers.ModelSerializer):
     brand = UserCreateSerializer()
+    branch = SuperCategorySerializer()
 
     class Meta:
         model = Dashboard
         fields = ("id", "brand", "branch", "logotype", "website", "branding")
 
 
-
 class DashboardSerializer(serializers.ModelSerializer):
     brand = UserCreateSerializer(read_only=True)
     gender = serializers.CharField(source='get_gender_display')
-    branch = CategorySerializer(read_only=True)
+    branch = SuperCategorySerializer(read_only=True)
     city = serializers.CharField(source='get_city_display')
 
     class Meta:
@@ -28,7 +41,7 @@ class DashboardSerializer(serializers.ModelSerializer):
 
 class DashboardFormSerializer(serializers.ModelSerializer):
     brand = UserCreateSerializer(read_only=True)
-    branch = CategorySerializer(read_only=True)
+    branch = SuperCategorySerializer(read_only=True)
 
     class Meta:
         model = Dashboard
@@ -54,3 +67,5 @@ class NotificationFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         exclude = ('checked',)
+
+# ==========================================================

@@ -3,20 +3,7 @@ import uuid
 import datetime
 from django.utils import timezone
 from accounts.models import Brand
-
-# Категория
-class Category(models.Model):
-    category_name = models.CharField(verbose_name='Название категорий', max_length=255)
-    slug = models.SlugField(verbose_name='Ключовой адрес', max_length=255, unique=True)
-
-
-    def __str__(self):
-        return self.category_name
-
-    class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категорий'
-
+from dashboard.models import SuperCategory, SubCategory
 
 
 # Недавняя активность
@@ -40,7 +27,8 @@ class Product(models.Model):
     owner = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Владелец')
     title = models.CharField(verbose_name='Заголовка', max_length=64)
     brand = models.CharField(verbose_name="Бренд", max_length=32)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
+    category = models.ForeignKey(SuperCategory, on_delete=models.CASCADE, verbose_name='Категория')
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='subcategory', verbose_name='Подкатегория')
     body = models.TextField(verbose_name='Описание', blank=True, null=True)
     picture = models.ImageField(verbose_name='Изброжения', upload_to='dashboard/products/', blank=True, null=True)
     # Цены
@@ -107,13 +95,13 @@ class AdditionalImage(models.Model):
 # Xарактеристика
 class Features(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Продукт")
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Категория", related_name="categories")
+    category = models.ForeignKey(SuperCategory, on_delete=models.CASCADE, verbose_name="Категория", related_name="categories")
     label = models.CharField(verbose_name="Названия", max_length=64)
     value = models.CharField(verbose_name="Значение", max_length=64, null=True, blank=True)
 
 
     def __str__(self):
-        return  "{}: {}".format(self.category.category_name, self.product.title)
+        return  "{}: {}".format(self.category.name, self.product.title)
 
     class Meta:
         verbose_name = "Xарактеристика"
@@ -124,7 +112,7 @@ class Features(models.Model):
 # Видеохостинг
 class Videohosting(models.Model):
     title = models.CharField(verbose_name='Название', max_length=64)
-    body = models.TextField(verbose_name='Описание')
+    body = models.TextField(verbose_name='Описание', blank=True)
     frame_url = models.CharField(verbose_name='Ссылка', max_length=255)
     access = models.BooleanField(verbose_name='Доступ к видео', default=True)
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
@@ -137,16 +125,4 @@ class Videohosting(models.Model):
     class Meta:
         verbose_name = "Видеохостинг"
         verbose_name_plural = "Видеохостинг"
-
-
-class Multilink(models.Model):
-    link = models.URLField(verbose_name='Дополнительный ссылки')
-    videohosting = models.ForeignKey(Videohosting, on_delete=models.CASCADE, verbose_name='Ссылки')
-
-    def __str__(self):
-        return self.link
-
-    class Meta:
-        verbose_name = "Ссылка"
-        verbose_name_plural = "Ссылки"
 

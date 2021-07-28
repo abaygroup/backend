@@ -2,7 +2,50 @@ from django.db import models
 from accounts.models import Brand
 from django.core.exceptions import ValidationError
 from phone_field import PhoneField
-from products.models import Category
+
+
+# Категория
+class Category(models.Model):
+    name = models.CharField(verbose_name='Название', max_length=255, unique=True)
+    slug = models.SlugField(verbose_name='Ключовой адрес', max_length=255, unique=True)
+    super_category = models.ForeignKey('SuperCategory', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Надкатегория')
+
+
+class SuperCategoryManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(super_category__isnull=True)
+
+
+class SuperCategory(Category):
+    objects = SuperCategoryManager()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        proxy = True
+        ordering = ('name',)
+        verbose_name = 'Надкатегория'
+        verbose_name_plural = 'Надкатегорий'
+
+
+class SubCategoryManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(super_category__isnull=False)
+
+
+class SubCategory(Category):
+    objects = SubCategoryManager()
+
+    def __str__(self):
+        return '{} - {}'.format(self.super_category.name, self.name)
+
+    class Meta:
+        proxy = True
+        ordering = ('super_category__name', 'name')
+        verbose_name = 'Подкатегория'
+        verbose_name_plural = 'Подкатегорий'
+
 
 # Модель Dashboard
 class Dashboard(models.Model):
@@ -49,7 +92,7 @@ class Dashboard(models.Model):
     # Направление бренда или магазина
     brand = models.OneToOneField(Brand, on_delete=models.CASCADE, verbose_name='Бренд')
     logotype = models.ImageField(verbose_name='Логотип', validators=[validate_logotype], upload_to='dashboard/avatar/', blank=True, null=True, help_text='Максимальный размер файла 2MB')
-    branch = models.ForeignKey(Category, on_delete=models.PROTECT, null=True, blank=True, verbose_name='Отрасль')
+    branch = models.ForeignKey(SuperCategory, on_delete=models.PROTECT, null=True, blank=True, verbose_name='Отрасль')
     body = models.TextField(verbose_name='О вас', max_length=300, blank=True, null=True)
 
     # Персональные данные
@@ -72,7 +115,6 @@ class Dashboard(models.Model):
     class Meta:
         verbose_name = 'Панель управление'
         verbose_name_plural = 'Панели управление'
-
 
 
 

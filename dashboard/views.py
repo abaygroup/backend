@@ -17,7 +17,7 @@ from django.utils import timezone
 
 # Главная страница панель управления
 # ============================================
-class DashboardOverviewView(views.APIView):
+class DashboardOverview(views.APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
