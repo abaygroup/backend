@@ -4,7 +4,7 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 
-from .models import Dashboard, Notification
+from .models import Dashboard, Notification, SuperCategory
 from products.models import Activity, Product
 from accounts.models import Brand
 
@@ -58,9 +58,12 @@ class DashboardView(views.APIView):
     
     def put(self, request):
         dashboard = get_object_or_404(Dashboard, brand=request.user)
+        branch = request.user.dashboard.branch
+        if not dashboard.branch:
+            branch = get_object_or_404(SuperCategory, slug=request.data['branch'])
         dashboard_serializer = DashboardFormSerializer(dashboard, data=request.data)
         if dashboard_serializer.is_valid():
-            dashboard_serializer.save(brand=request.user, branch=request.user.dashboard.branch)
+            dashboard_serializer.save(brand=request.user, branch=branch)
             return Response(dashboard_serializer.data)
         return Response(dashboard_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
