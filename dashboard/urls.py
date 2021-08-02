@@ -25,4 +25,6 @@ urlpatterns = [
     # Videhosting
     path('product/<owner>/<isbn_code>/videohosting/', product_view.VidehostingView.as_view()),
     path('product/<owner>/<isbn_code>/video/<int:pk>/', product_view.VidehostingDetailView.as_view()),
+
+    path('settings/', dashboard_view.SettingsView.as_view())
 ]

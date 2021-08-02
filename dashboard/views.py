@@ -152,3 +152,15 @@ class AccessMessageView(views.APIView):
         return Response({'checked': notification.checked}, status=status.HTTP_201_CREATED)
 
 # ==================================
+
+
+
+# Настройка
+# ==================================
+class SettingsView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get(self, request):
+        dashboard = request.user.dashboard
+        dashboard_serializer = DashboardSerializer(dashboard, context={"request": request})
+        return Response(dashboard_serializer.data, status=status.HTTP_200_OK)
