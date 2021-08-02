@@ -53,9 +53,7 @@ REST_FRAMEWORK = {
 
 # Django CORS Headers
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  
-]
+
 
 # Кастомный пользовательский модель
 AUTH_USER_MODEL = 'accounts.Brand'
