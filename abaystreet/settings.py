@@ -169,8 +169,8 @@ SIMPLE_JWT = {
 }
 
 # Настройка Djoser 
-DOMAIN = ('localhost:3000') 
-SITE_NAME = ('localhost:3000')
+DOMAIN = ('dashboard.abaystreet.com')
+SITE_NAME = ('abaystreet')
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
