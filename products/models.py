@@ -126,17 +126,3 @@ class Videohosting(models.Model):
         verbose_name = "Видеохостинг"
         verbose_name_plural = "Видеохостинг"
 
-
-
-class Docs(models.Model):
-    videohosting = models.ForeignKey(Videohosting, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Видеохостинг')
-    title = models.CharField(verbose_name='Тема', max_length=255)
-    body = models.TextField(verbose_name='Описание', blank=True)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = 'Документация'
-        verbose_name_plural = 'Документации'
-
