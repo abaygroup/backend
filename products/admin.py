@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Product, Features, AdditionalImage, Videohosting
+from .models import Activity, Product, Features, AdditionalImage, Videohosting, Docs
 
 
 # Xарактеристики продукта
@@ -50,3 +50,4 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(Videohosting, VidehostingAdmin)
 admin.site.register(Activity)
 admin.site.register(Features)
+admin.site.register(Docs)
