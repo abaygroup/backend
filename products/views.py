@@ -50,12 +50,12 @@ class ProductDetailView(views.APIView):
 
     def get(self, request, owner, isbn_code):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
-        videhosting = product.videohosting_set.all()
+        videohosting = product.videohosting_set.all()
         features = product.features_set.all()
         additionalImage = product.additionalimage_set.all()
 
         product_serializer = ProductDetailSerializer(product, context={"request": request}, partial=True)
-        videohosting_serializer = VideohostingSerializer(videhosting, many=True)
+        videohosting_serializer = VideohostingSerializer(videohosting, many=True)
         features_serializer = FeatureSerializer(features, many=True)
         ai_serializer = AISerializer(additionalImage, context={"request": request}, many=True)
 

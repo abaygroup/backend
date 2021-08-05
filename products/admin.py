@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Product, Features, AdditionalImage, Videohosting
+from .models import Activity, Product, Features, AdditionalImage, Videohosting, Docs, Comment
 
 
 # Xарактеристики продукта
@@ -34,6 +34,11 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 # Admin видеохостинга
+class CommentTable(admin.TabularInline):
+    model = Comment
+    fields = ('owner', 'body',)
+    extra = 0
+
 class VidehostingAdmin(admin.ModelAdmin):
     list_display = ('product', 'title', 'timestamp',)
     fieldsets = (
@@ -42,11 +47,14 @@ class VidehostingAdmin(admin.ModelAdmin):
     list_filter = ('access',)
     search_fields = ('title', 'body',)
     ordering = ('-timestamp',)
+    inlines = [CommentTable, ]
     filter_horizontal = ()
 # ===============================================
 
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Videohosting, VidehostingAdmin)
+admin.site.register(Docs)
+
 admin.site.register(Activity)
 admin.site.register(Features)
