@@ -1,6 +1,4 @@
 import os
-import sys
-import dj_database_url
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
@@ -9,14 +7,13 @@ from django.core.management.utils import get_random_secret_key
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ПРЕДУПРЕЖДЕНИЕ О БЕЗОПАСНОСТИ: держите секретный ключ, используемый в производстве, в секрете!
-SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
+SECRET_KEY = config("SECRET_KEY")
 
 # ПРЕДУПРЕЖДЕНИЕ О БЕЗОПАСНОСТИ: не запускайте в продакшене с включенной отладкой!
-DEBUG = os.getenv("DEBUG", "True") == "True"
+DEBUG = config("DEBUG") == "True"
 
 
-# ALLOWED_HOSTS = ['abaygroup.pythonanywhere.com', '127.0.0.1', 'localhost']
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Определение приложения
@@ -96,34 +93,18 @@ WSGI_APPLICATION = 'abaystreet.wsgi.application'
 
 
 # База данных
-DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "True") == "True"
-
-if DEVELOPMENT_MODE is True:
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.sqlite3',
-    #         'NAME': BASE_DIR / 'db.sqlite3',
-    #     }
-    # }
-
-    # Настройка Postgres
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': config('NAME'),
-            'USER': config('USER'),
-            'PASSWORD': config('PASSWORD'),
-            'HOST': config('HOST'),
-            'PORT': config('PORT')
-        }
+# ===============================================================
+# Настройка Postgres
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('NAME'),
+        'USER': config('USER'),
+        'PASSWORD': config('PASSWORD'),
+        'HOST': config('HOST'),
+        'PORT': config('PORT')
     }
-
-elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
-    if os.getenv("DATABASE_URL", None) is None:
-        raise Exception("Переменная среды DATABASE_URL не определена")
-    DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
-    }
+}
 # ===============================================================
 
 
@@ -165,7 +146,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -179,8 +160,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'abaystgroup@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'rranbmkpoilsapyl')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 
