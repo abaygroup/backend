@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
-from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,7 +12,7 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG") == "True"
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'api.abaystreet.com']
 
 
 # Определение приложения
