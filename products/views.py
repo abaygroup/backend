@@ -117,6 +117,7 @@ class VidehostingDetailView(views.APIView):
         video = product.videohosting_set.get(pk=pk)
         video_serializer = VideohostingSerializer(video)
         context = {
+            'product': {"owner": product.owner.brandname, "isbn_code": product.isbn_code},
             'video': video_serializer.data,
         }
         return Response(context, status=status.HTTP_200_OK)

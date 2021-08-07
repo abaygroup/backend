@@ -61,7 +61,7 @@ class DashboardView(views.APIView):
         branch = request.user.dashboard.branch
         if not dashboard.branch:
             branch = get_object_or_404(SuperCategory, slug=request.data['branch'])
-        dashboard_serializer = DashboardFormSerializer(dashboard, data=request.data)
+        dashboard_serializer = DashboardFormSerializer(dashboard, data=request.data, context={"request": request})
         if dashboard_serializer.is_valid():
             dashboard_serializer.save(brand=request.user, branch=branch)
             return Response(dashboard_serializer.data)

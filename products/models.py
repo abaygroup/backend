@@ -33,8 +33,8 @@ class Product(models.Model):
     body = models.TextField(verbose_name='Описание', blank=True, null=True)
     picture = models.ImageField(verbose_name='Изброжения', upload_to='dashboard/products/', blank=True, null=True)
     # Цены
-    first_price = models.DecimalField(verbose_name='От', max_digits=8, decimal_places=2)
-    last_price = models.DecimalField(verbose_name='До', max_digits=8, decimal_places=2)
+    first_price = models.DecimalField(verbose_name='От', max_digits=9, decimal_places=2)
+    last_price = models.DecimalField(verbose_name='До', max_digits=9, decimal_places=2)
     # Код товара
     isbn_code = models.UUIDField(verbose_name='Коды товара(ISBN, UPC, GTIN)', unique=True, default=uuid.uuid4,
                                  editable=False)
