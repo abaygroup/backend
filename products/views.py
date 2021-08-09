@@ -63,7 +63,8 @@ class ProductDetailView(views.APIView):
             "products": product_serializer.data,
             "videohosting": videohosting_serializer.data,
             "features": features_serializer.data,
-            "ai": ai_serializer.data
+            "ai": ai_serializer.data,
+            "observers_count": product.observers.count()
         }
 
         return Response(context, status=status.HTTP_200_OK)
