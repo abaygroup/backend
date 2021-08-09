@@ -7,7 +7,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from products.models import Product, SubCategory
 from products.serializers import ( ProductListSerializer, ProductDetailSerializer,
                                    FeatureSerializer, AISerializer,
-                                   VideohostingSerializer)
+                                   VideohostingSerializer, CommentSerializer, DocsSerializer)
 
 from django.db.models import Q
 
@@ -92,7 +92,7 @@ class DeletePictureView(views.APIView):
         product.picture.delete()
         return Response({'deleted': True}, status=status.HTTP_204_NO_CONTENT)
 
-
+# ========================================================================
 
 
 # Видеохостинг
@@ -115,12 +115,28 @@ class VidehostingDetailView(views.APIView):
     def get(self, request, owner, isbn_code, pk):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         video = product.videohosting_set.get(pk=pk)
+        comment = video.comment_set.all()
+        docs = video.docs_set.all()
         video_serializer = VideohostingSerializer(video)
+        comment_serializer = CommentSerializer(comment, many=True)
+        docs_serializer = DocsSerializer(docs, context={"request": request}, many=True)
         context = {
             'product': {"owner": product.owner.brandname, "isbn_code": product.isbn_code},
             'video': video_serializer.data,
+            'comment': comment_serializer.data,
+            'docs': docs_serializer.data
         }
         return Response(context, status=status.HTTP_200_OK)
+
+    def post(self, request, owner, isbn_code, pk):
+        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
+        video = product.videohosting_set.get(pk=pk)
+        docs_serializer = DocsSerializer(data=request.data)
+        if docs_serializer.is_valid():
+            docs_serializer.save(videohosting=video)
+            return Response(docs_serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(docs_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, owner, isbn_code, pk):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
@@ -138,7 +154,17 @@ class VidehostingDetailView(views.APIView):
         video.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# ================================
+
+class DeleteDocsView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def delete(self, request, owner, isbn_code, pk, docs_id):
+        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
+        video = product.videohosting_set.get(pk=pk)
+        docs = video.docs_set.get(pk=docs_id)
+        docs.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+# ========================================================================
 
 
 # Характеристики

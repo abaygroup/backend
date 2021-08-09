@@ -36,8 +36,7 @@ class Product(models.Model):
     first_price = models.DecimalField(verbose_name='От', max_digits=9, decimal_places=2)
     last_price = models.DecimalField(verbose_name='До', max_digits=9, decimal_places=2)
     # Код товара
-    isbn_code = models.UUIDField(verbose_name='Коды товара(ISBN, UPC, GTIN)', unique=True, default=uuid.uuid4,
-                                 editable=False)
+    isbn_code = models.UUIDField(verbose_name='Коды товара(ISBN, UPC, GTIN)', unique=True, default=uuid.uuid4, editable=False)
     observers = models.ManyToManyField(Brand, verbose_name='Студенты', related_name='observers', blank=True)
 
     # Время
@@ -46,9 +45,6 @@ class Product(models.Model):
 
     # Продакшен
     production = models.BooleanField(verbose_name="Публикация", default=False)
-
-    # Просмотры
-    view = models.IntegerField(verbose_name='Просмотров', default=0)
 
     def __str__(self):
         return self.title
@@ -113,13 +109,15 @@ class Features(models.Model):
 # Видеохостинг
 # =========================================================================
 class Videohosting(models.Model):
-    title = models.CharField(verbose_name='Название', max_length=64)
+    title = models.CharField(verbose_name='Название', max_length=32)
     body = models.TextField(verbose_name='Описание', blank=True)
     frame_url = models.CharField(verbose_name='Ссылка', max_length=255)
     access = models.BooleanField(verbose_name='Доступ к видео', default=True)
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
-
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
+
+    # Просмотры
+    view = models.IntegerField(verbose_name='Просмотров', default=0)
 
     def __str__(self):
         return "{} | {}".format(self.product, self.title)
