@@ -8,6 +8,7 @@ from phone_field import PhoneField
 class Category(models.Model):
     name = models.CharField(verbose_name='Название', max_length=255, unique=True)
     slug = models.SlugField(verbose_name='Ключовой адрес', max_length=255, unique=True)
+    image = models.ImageField(verbose_name='Изображение', blank=True, null=True, upload_to='dashboard/categories/')
     super_category = models.ForeignKey('SuperCategory', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Надкатегория')
 
 
