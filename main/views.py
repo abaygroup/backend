@@ -4,9 +4,12 @@ from rest_framework.response import Response
 
 from products.models import Product, SuperCategory, SubCategory
 from dashboard.models import Category
-from .serializers import MediahostingMainProductListSerializer, SubCategorySerializer, SupCategorySerializer
+from .serializers import ( MediahostingMainProductListSerializer,
+                           SubCategorySerializer, SupCategorySerializer,
+                           ProfileSerializer)
 
 
+# Main Page View
 class MainAPIView(views.APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
 
@@ -42,6 +45,7 @@ class SearchView(views.APIView):
 
 
 
+# Search Page View
 class CategoryDetailView(views.APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
 
@@ -57,3 +61,13 @@ class CategoryDetailView(views.APIView):
         }
 
         return Response(context, status=status.HTTP_200_OK)
+
+
+
+# Profile Page View
+class ProfileView(views.APIView):
+
+    def get(self, request):
+        profile = ProfileSerializer(request.user.dashboard, partial=True, context={"request": request})
+
+        return Response(profile.data, status=status.HTTP_200_OK)

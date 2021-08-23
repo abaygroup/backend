@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Post
 from products.models import Product, SuperCategory, SubCategory
+from dashboard.models import Dashboard
 from accounts.serializers import UserCreateSerializer
 
 
@@ -31,6 +32,17 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
 # ==========================================================================
 
+# Profile
+# ==========================================================================
+class ProfileSerializer(serializers.ModelSerializer):
+    brand = UserCreateSerializer(read_only=True)
+
+    class Meta:
+        model = Dashboard
+        fields = ('id', 'brand', 'logotype', 'first_name', 'last_name', 'branding',)
+
+
+# ==========================================================================
 
 class PostSerializer(serializers.ModelSerializer):
 
