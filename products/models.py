@@ -125,6 +125,7 @@ class Videohosting(models.Model):
     class Meta:
         verbose_name = "Видеохостинг"
         verbose_name_plural = "Видеохостинг"
+        ordering = ['title']
 
 
 

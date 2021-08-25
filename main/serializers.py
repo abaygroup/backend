@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Post
-from products.models import Product, SuperCategory, SubCategory
+from products.models import Product, SuperCategory, SubCategory, Videohosting
 from dashboard.models import Dashboard
 from accounts.serializers import UserCreateSerializer
 
@@ -14,6 +14,26 @@ class MediahostingMainProductListSerializer(serializers.ModelSerializer):
         model = Product
         fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'body', 'production', 'owner',)
 
+
+class MediahostingProductSerializer(serializers.ModelSerializer):
+    owner = UserCreateSerializer(read_only=True)
+
+
+    class Meta:
+        model = Product
+        fields = ('id', 'title', 'brand', 'picture', 'body', 'isbn_code', 'production', 'owner', 'timestamp', 'last_update',)
+
+
+class VideoHostingListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Videohosting
+        fields = ('id', 'title', 'timestamp', 'access',)
+
+
+class VideoHostingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Videohosting
+        fields = ('id', 'title', 'frame_url', 'body',)
 # ==========================================================================
 
 

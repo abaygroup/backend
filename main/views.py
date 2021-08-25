@@ -2,11 +2,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import views, status, permissions
 from rest_framework.response import Response
 
-from products.models import Product, SuperCategory, SubCategory
+from accounts.models import Brand
+from products.models import Product, SuperCategory, SubCategory, Videohosting
 from dashboard.models import Category
-from .serializers import ( MediahostingMainProductListSerializer,
+from .serializers import ( MediahostingMainProductListSerializer, MediahostingProductSerializer,
                            SubCategorySerializer, SupCategorySerializer,
-                           ProfileSerializer)
+                           ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer)
 
 
 # Main Page View
@@ -67,7 +68,50 @@ class CategoryDetailView(views.APIView):
 # Profile Page View
 class ProfileView(views.APIView):
 
-    def get(self, request):
-        profile = ProfileSerializer(request.user.dashboard, partial=True, context={"request": request})
+    def get(self, request, brandname):
+        brand = get_object_or_404(Brand, brandname=brandname)
+        profile = ProfileSerializer(brand.dashboard, partial=True, context={"request": request})
+        products = MediahostingMainProductListSerializer(brand.product_set.filter(production=True), many=True, context={"request": request})
 
-        return Response(profile.data, status=status.HTTP_200_OK)
+        context = {
+            "profile": profile.data,
+            "products": products.data
+        }
+        return Response(context, status=status.HTTP_200_OK)
+
+
+
+# Product Detail View
+class ProductDetailView(views.APIView):
+
+    def get(self, request, isbn_code):
+        product = get_object_or_404(Product, isbn_code=isbn_code)
+        videohosting = product.videohosting_set.all()
+        product = MediahostingProductSerializer(product, partial=True, context={"request": request})
+        videohosting = VideoHostingListSerializer(videohosting, many=True)
+
+        context = {
+            "product": product.data,
+            "videohosting": videohosting.data
+        }
+        return Response(context, status=status.HTTP_200_OK)
+
+
+# Videohosting View
+class VideoHostingView(views.APIView):
+
+    def get(self, request, isbn_code, id):
+        product = get_object_or_404(Product, isbn_code=isbn_code)
+        videohosting = product.videohosting_set.filter(access=True)
+        video = get_object_or_404(Videohosting, id=id)
+        video.view += 1
+        video.save()
+        video = VideoHostingSerializer(video, partial=True)
+        videohosting = VideoHostingListSerializer(videohosting, many=True)
+
+        context = {
+            "video": video.data,
+            "videohosting": videohosting.data
+        }
+
+        return Response(context, status=status.HTTP_200_OK)
