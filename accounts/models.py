@@ -26,8 +26,8 @@ class BrandManager(BaseUserManager):
 
 # Brand модель
 class Brand(AbstractBaseUser, PermissionsMixin):
-    brandname = models.CharField(verbose_name=_('Имя бренда'), max_length=64, unique=True)
-    email = models.EmailField(verbose_name=_('email address'), max_length=255, unique=True)
+    brandname = models.CharField(verbose_name=_('Имя бренда'), max_length=32, unique=True)
+    email = models.EmailField(verbose_name=_('email address'), max_length=64, unique=True)
     is_active = models.BooleanField(verbose_name=_('Статус активность'), help_text='Это статус активности пользователя.', default=True)
     is_staff = models.BooleanField(verbose_name=_('Статус партнера'), help_text='Статус бренда как нашего партнера.', default=False)
 

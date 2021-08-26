@@ -2,8 +2,8 @@ from django.db import models
 import uuid
 import datetime
 from django.utils import timezone
-from accounts.models import Brand
 from dashboard.models import SuperCategory, SubCategory
+from accounts.models import Brand
 
 
 # Недавняя активность
@@ -26,7 +26,7 @@ class Activity(models.Model):
 class Product(models.Model):
     # Описание
     owner = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Владелец')
-    title = models.CharField(verbose_name='Заголовка', max_length=64)
+    title = models.CharField(verbose_name='Заголовка', max_length=40)
     brand = models.CharField(verbose_name="Бренд", max_length=32)
     category = models.ForeignKey(SuperCategory, on_delete=models.CASCADE, verbose_name='Категория')
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='subcategory', verbose_name='Подкатегория')
@@ -109,7 +109,7 @@ class Features(models.Model):
 # Видеохостинг
 # =========================================================================
 class Videohosting(models.Model):
-    title = models.CharField(verbose_name='Название', max_length=32)
+    title = models.CharField(verbose_name='Название', max_length=64)
     body = models.TextField(verbose_name='Описание', blank=True)
     frame_url = models.CharField(verbose_name='Ссылка', max_length=255)
     access = models.BooleanField(verbose_name='Доступ к видео', default=True)

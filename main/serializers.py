@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post
+from .models import Post, Favorite
 from products.models import Product, SuperCategory, SubCategory, Videohosting
 from dashboard.models import Dashboard
 from accounts.serializers import UserCreateSerializer
@@ -18,7 +18,6 @@ class MediahostingMainProductListSerializer(serializers.ModelSerializer):
 class MediahostingProductSerializer(serializers.ModelSerializer):
     owner = UserCreateSerializer(read_only=True)
 
-
     class Meta:
         model = Product
         fields = ('id', 'title', 'brand', 'picture', 'body', 'isbn_code', 'production', 'owner', 'timestamp', 'last_update',)
@@ -34,11 +33,11 @@ class VideoHostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Videohosting
         fields = ('id', 'title', 'frame_url', 'body',)
-# ==========================================================================
+# ================================================================================
 
 
 # Category
-# ==========================================================================
+# ================================================================================
 class SupCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SuperCategory
@@ -50,10 +49,10 @@ class SubCategorySerializer(serializers.ModelSerializer):
         model = SubCategory
         fields = "__all__"
 
-# ==========================================================================
+# ================================================================================
 
 # Profile
-# ==========================================================================
+# ================================================================================
 class ProfileSerializer(serializers.ModelSerializer):
     brand = UserCreateSerializer(read_only=True)
 
@@ -62,7 +61,29 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'brand', 'logotype', 'first_name', 'last_name', 'branding',)
 
 
-# ==========================================================================
+# ================================================================================
+
+
+
+# Favorite and Following Serializer
+# ================================================================================
+class FavoritesSerializer(serializers.ModelSerializer):
+    product = MediahostingMainProductListSerializer(read_only=True)
+    user = UserCreateSerializer(read_only=True)
+
+    class Meta:
+        model = Favorite
+        fields = '__all__'
+
+
+class FollowingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'body', 'production', 'owner',)
+
+# ================================================================================
+
 
 class PostSerializer(serializers.ModelSerializer):
 

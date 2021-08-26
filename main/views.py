@@ -6,7 +6,7 @@ from accounts.models import Brand
 from products.models import Product, SuperCategory, SubCategory, Videohosting
 from dashboard.models import Category
 from .serializers import ( MediahostingMainProductListSerializer, MediahostingProductSerializer,
-                           SubCategorySerializer, SupCategorySerializer,
+                           SubCategorySerializer, SupCategorySerializer, FavoritesSerializer, FollowingSerializer,
                            ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer)
 
 
@@ -19,16 +19,33 @@ class MainAPIView(views.APIView):
         last_products = Product.objects.filter(production=True)[:8]
         last_products_serializer = MediahostingMainProductListSerializer(last_products, many=True, context={"request": request})
         future_products_serializer = MediahostingMainProductListSerializer(future_products, many=True, context={"request": request})
+        if request.user.is_authenticated:
+            my_mediahosting = request.user.product_set.filter(production=True)[:8]
+            favorites_products = request.user.favorites.all()[:8]
+            following_products = request.user.observers.all()[:8]
 
-        context = {
-            "last_products": last_products_serializer.data,
-            "future_products": future_products_serializer.data
-        }
+            my_mediahosting = MediahostingMainProductListSerializer(my_mediahosting, many=True, context={"request": request})
+            favorites_products = FavoritesSerializer(favorites_products, many=True, context={"request": request})
+            following_products = FollowingSerializer(following_products, many=True, context={"request": request})
+
+            context = {
+                "future_products": future_products_serializer.data,
+                "favorites_products": favorites_products.data,
+                "following_products": following_products.data,
+                "my_mediahosting": my_mediahosting.data,
+                "last_products": last_products_serializer.data
+            }
+        else:
+            context = {
+                "future_products": future_products_serializer.data,
+                "last_products": last_products_serializer.data
+            }
 
         return Response(context, status=status.HTTP_200_OK)
 
 
 
+# Search Page View
 class SearchView(views.APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
 
@@ -46,7 +63,6 @@ class SearchView(views.APIView):
 
 
 
-# Search Page View
 class CategoryDetailView(views.APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
 
@@ -63,6 +79,35 @@ class CategoryDetailView(views.APIView):
 
         return Response(context, status=status.HTTP_200_OK)
 
+
+# Following View
+class FollowingView(views.APIView):
+
+    def get(self, request):
+        following_products = request.user.observers.all()
+        following_products = FollowingSerializer(following_products, many=True, context={"request": request})
+
+        return Response(following_products.data, status=status.HTTP_200_OK)
+
+
+# MyMediahostingView View
+class MyMediahostingView(views.APIView):
+
+    def get(self, request):
+        my_mediahosting = request.user.product_set.filter(production=True)
+        my_mediahosting = MediahostingMainProductListSerializer(my_mediahosting, many=True, context={"request": request})
+
+        return Response(my_mediahosting.data, status=status.HTTP_200_OK)
+
+
+# Favorites View
+class FavoritesView(views.APIView):
+
+    def get(self, request):
+        favorites_products = request.user.favorites.all()
+        favorites_products = FavoritesSerializer(favorites_products, many=True, context={"request": request})
+
+        return Response(favorites_products.data, status=status.HTTP_200_OK)
 
 
 # Profile Page View
