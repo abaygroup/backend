@@ -115,7 +115,7 @@ class Dashboard(models.Model):
 
 
     def __str__(self):
-        return self.brand
+        return self.brand.brandname
 
     class Meta:
         verbose_name = 'Панель управление'
