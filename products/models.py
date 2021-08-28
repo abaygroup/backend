@@ -30,6 +30,7 @@ class Product(models.Model):
     brand = models.CharField(verbose_name="Бренд", max_length=32)
     category = models.ForeignKey(SuperCategory, on_delete=models.CASCADE, verbose_name='Категория')
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='subcategory', verbose_name='Подкатегория')
+    about = models.TextField(verbose_name='Кратко о продукте', max_length=300, blank=True, null=True)
     body = models.TextField(verbose_name='Описание', blank=True, null=True)
     picture = models.ImageField(verbose_name='Изброжения', upload_to='dashboard/products/', blank=True, null=True)
     # Цены
@@ -77,18 +78,6 @@ class Product(models.Model):
 
 
 
-class AdditionalImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Продукт")
-    image = models.ImageField(verbose_name="Изброжения", upload_to="dashboard/products/ai/", null=True, blank=True)
-
-    def __str__(self):
-        return "Дополнительная иллюстрация для {}".format(self.product)
-
-    class Meta:
-        verbose_name = 'Дополнительная иллюстрация'
-        verbose_name_plural = 'Дополнительный иллюстрации'
-
-
 # Xарактеристика
 class Features(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Продукт")
@@ -127,22 +116,6 @@ class Videohosting(models.Model):
         verbose_name_plural = "Видеохостинг"
         ordering = ['title']
 
-
-
-class Docs(models.Model):
-    videohosting = models.ForeignKey(Videohosting, on_delete=models.CASCADE, verbose_name='Видеохостинг')
-    title = models.CharField(verbose_name='Заголовка', max_length=255)
-    body = models.TextField(verbose_name='Описание', blank=True)
-    date_created = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
-    date_updated = models.DateTimeField(verbose_name='Дата обновление', auto_now=True)
-
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = 'Документация'
-        verbose_name_plural = 'Документации'
 
 
 class Comment(models.Model):

@@ -110,6 +110,18 @@ class FavoritesView(views.APIView):
         return Response(favorites_products.data, status=status.HTTP_200_OK)
 
 
+class AddToFavorite(views.APIView):
+
+    def post(self, request, isbn_code):
+        product = get_object_or_404(Product, isbn_code=isbn_code)
+        if request.user.favorites.filter(product=product).exists():
+            request.user.favorites.filter(product=product).delete()
+            return Response({"message": "{} deleted".format(product.title)}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            request.user.favorites.create(product=product)
+            return Response({"message": "{} added".format(product.title)}, status=status.HTTP_201_CREATED)
+
+
 # Profile Page View
 class ProfileView(views.APIView):
 

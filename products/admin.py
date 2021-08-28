@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Product, Features, AdditionalImage, Videohosting, Docs, Comment
+from .models import Activity, Product, Features, Videohosting, Comment
 
 
 # Xарактеристики продукта
@@ -8,10 +8,6 @@ class FeaturesTable(admin.TabularInline):
     fields = ('product', 'label', 'value')
     extra = 0
 
-class AdditionalImageTable(admin.TabularInline):
-    model = AdditionalImage
-    fields = ('image',)
-    extra = 0
 # ===============================================
 
 
@@ -19,15 +15,15 @@ class AdditionalImageTable(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('title', 'owner', 'first_price', 'last_price', 'timestamp', 'last_update')
     fieldsets = (
-        ('Описание товара', {'fields': ('title', 'brand', 'owner', 'category', 'subcategory', 'picture', 'body',)}),
+        ('Описание товара', {'fields': ('title', 'brand', 'owner', 'category', 'subcategory', 'picture', 'about', 'body',)}),
         ('Цены', {'fields': ('first_price', 'last_price',)}),
         ('Доступ', {'fields': ('observers',)}),
         ('Продакшен', {'fields': ('production',)})
     )
     list_filter = ('production',)
-    search_fields = ('title', 'body', 'category',)
+    search_fields = ('title', 'about', 'body', 'category',)
     ordering = ('-timestamp',)
-    inlines = [ FeaturesTable, AdditionalImageTable ]
+    inlines = [ FeaturesTable, ]
     filter_horizontal = ()
 # ===============================================
 
@@ -54,7 +50,6 @@ class VidehostingAdmin(admin.ModelAdmin):
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Videohosting, VidehostingAdmin)
-admin.site.register(Docs)
 
 admin.site.register(Activity)
 admin.site.register(Features)

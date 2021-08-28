@@ -6,8 +6,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from products.models import Product, SubCategory
 from products.serializers import ( ProductListSerializer, ProductDetailSerializer,
-                                   FeatureSerializer, AISerializer,
-                                   VideohostingSerializer, CommentSerializer, DocsSerializer)
+                                   FeatureSerializer,
+                                   VideohostingSerializer, CommentSerializer)
 
 from django.db.models import Q
 
@@ -52,18 +52,15 @@ class ProductDetailView(views.APIView):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         videohosting = product.videohosting_set.all()
         features = product.features_set.all()
-        additionalImage = product.additionalimage_set.all()
 
         product_serializer = ProductDetailSerializer(product, context={"request": request}, partial=True)
         videohosting_serializer = VideohostingSerializer(videohosting, many=True)
         features_serializer = FeatureSerializer(features, many=True)
-        ai_serializer = AISerializer(additionalImage, context={"request": request}, many=True)
 
         context = {
-            "products": product_serializer.data,
+            "product": product_serializer.data,
             "videohosting": videohosting_serializer.data,
             "features": features_serializer.data,
-            "ai": ai_serializer.data,
             "observers_count": product.observers.count()
         }
 
@@ -117,27 +114,15 @@ class VidehostingDetailView(views.APIView):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         video = product.videohosting_set.get(pk=pk)
         comment = video.comment_set.all()
-        docs = video.docs_set.all()
         video_serializer = VideohostingSerializer(video)
         comment_serializer = CommentSerializer(comment, many=True)
-        docs_serializer = DocsSerializer(docs, context={"request": request}, many=True)
         context = {
             'product': {"owner": product.owner.brandname, "isbn_code": product.isbn_code},
             'video': video_serializer.data,
             'comment': comment_serializer.data,
-            'docs': docs_serializer.data
         }
         return Response(context, status=status.HTTP_200_OK)
 
-    def post(self, request, owner, isbn_code, pk):
-        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
-        video = product.videohosting_set.get(pk=pk)
-        docs_serializer = DocsSerializer(data=request.data)
-        if docs_serializer.is_valid():
-            docs_serializer.save(videohosting=video)
-            return Response(docs_serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(docs_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, owner, isbn_code, pk):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
@@ -155,16 +140,6 @@ class VidehostingDetailView(views.APIView):
         video.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class DeleteDocsView(views.APIView):
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    def delete(self, request, owner, isbn_code, pk, docs_id):
-        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
-        video = product.videohosting_set.get(pk=pk)
-        docs = video.docs_set.get(pk=docs_id)
-        docs.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 # ========================================================================
 
 
@@ -183,7 +158,6 @@ class FeaturesView(views.APIView):
 
 
 class FeatureDetailView(views.APIView):
-    parser_classes = [MultiPartParser, FormParser, ]
 
     def put(self, request, owner, isbn_code, pk):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
@@ -199,40 +173,6 @@ class FeatureDetailView(views.APIView):
         product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
         feature = product.features_set.get(pk=pk)
         feature.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# Дополнительный иллюстрации
-class AIView(views.APIView):
-    parser_classes = [MultiPartParser, FormParser, ]
-
-    def post(self, request, owner, isbn_code):
-        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
-        ai_serializer = AISerializer(data=request.data)
-        if ai_serializer.is_valid():
-            ai_serializer.save(product=product)
-            return Response(ai_serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(ai_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AIDetailView(views.APIView):
-    parser_classes = [MultiPartParser, FormParser, ]
-
-    def put(self, request, owner, isbn_code, pk):
-        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
-        ai = product.additionalimage_set.get(pk=pk)
-        ai_serializer = AISerializer(ai, data=request.data)
-        if ai_serializer.is_valid():
-            ai_serializer.save()
-            return Response(ai_serializer.data)
-
-        return Response(ai_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, owner, isbn_code, pk):
-        product = get_object_or_404(Product, owner=request.user, isbn_code=isbn_code)
-        ai = product.additionalimage_set.get(pk=pk)
-        ai.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===========================================================================

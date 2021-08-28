@@ -19,13 +19,10 @@ urlpatterns = [
     path('product/<owner>/<isbn_code>/picture/', product_view.DeletePictureView.as_view()),
     path('product/<owner>/<isbn_code>/features/', product_view.FeaturesView.as_view()),
     path('product/<owner>/<isbn_code>/feature/<int:pk>/', product_view.FeatureDetailView.as_view()),
-    path('product/<owner>/<isbn_code>/ais/', product_view.AIView.as_view()),
-    path('product/<owner>/<isbn_code>/ai/<int:pk>/', product_view.AIDetailView.as_view()),
 
     # Videhosting
     path('product/<owner>/<isbn_code>/videohosting/', product_view.VidehostingView.as_view()),
     path('product/<owner>/<isbn_code>/video/<int:pk>/', product_view.VidehostingDetailView.as_view()),
-    path('product/<owner>/<isbn_code>/video/<int:pk>/docs/<int:docs_id>/', product_view.DeleteDocsView.as_view()),
 
     path('settings/', dashboard_view.SettingsView.as_view())
 ]

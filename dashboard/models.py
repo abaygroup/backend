@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from phone_field import PhoneField
 
 
-
 # Категория
 class Category(models.Model):
     name = models.CharField(verbose_name='Название', max_length=255, unique=True)
@@ -107,7 +106,6 @@ class Dashboard(models.Model):
     reserve_email = models.EmailField(verbose_name='Резервный email', max_length=64, blank=True, null=True)
     website = models.CharField(verbose_name='Веб сайт', max_length=64, blank=True, null=True)
 
-    # favorites = models.ManyToManyField('Product', related_name='favorites', blank=True)
 
     # Статусы
     branding = models.BooleanField(verbose_name='Брендинг', default=False)
