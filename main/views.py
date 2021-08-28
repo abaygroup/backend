@@ -71,11 +71,18 @@ class CategoryDetailView(views.APIView):
         products = Product.objects.filter(subcategory=sub_category, production=True)
         sub_category_serializer = SubCategorySerializer(sub_category, context={"request": request})
         products_serializer = MediahostingMainProductListSerializer(products, many=True, context={"request": request})
-
-        context = {
-            "sub_category": sub_category_serializer.data,
-            "products": products_serializer.data
-        }
+        if request.user.is_authenticated:
+            favorites = FavoritesSerializer(request.user.favorites.all(), many=True)
+            context = {
+                "sub_category": sub_category_serializer.data,
+                "products": products_serializer.data,
+                "favorites": favorites.data
+            }
+        else:
+            context = {
+                "sub_category": sub_category_serializer.data,
+                "products": products_serializer.data,
+            }
 
         return Response(context, status=status.HTTP_200_OK)
 
@@ -105,7 +112,7 @@ class FavoritesView(views.APIView):
 
     def get(self, request):
         favorites_products = request.user.favorites.all()
-        favorites_products = FavoritesSerializer(favorites_products, many=True, context={"request": request})
+        favorites_products = FavoritesSerializer(favorites_products, many=True)
 
         return Response(favorites_products.data, status=status.HTTP_200_OK)
 
@@ -114,11 +121,11 @@ class AddToFavorite(views.APIView):
 
     def post(self, request, isbn_code):
         product = get_object_or_404(Product, isbn_code=isbn_code)
-        if request.user.favorites.filter(product=product).exists():
-            request.user.favorites.filter(product=product).delete()
+        if product.favorites.filter(id=request.user.id).exists():
+            product.favorites.remove(request.user)
             return Response({"message": "{} deleted".format(product.title)}, status=status.HTTP_204_NO_CONTENT)
         else:
-            request.user.favorites.create(product=product)
+            product.favorites.add(request.user)
             return Response({"message": "{} added".format(product.title)}, status=status.HTTP_201_CREATED)
 
 
@@ -129,10 +136,13 @@ class ProfileView(views.APIView):
         brand = get_object_or_404(Brand, brandname=brandname)
         profile = ProfileSerializer(brand.dashboard, partial=True, context={"request": request})
         products = MediahostingMainProductListSerializer(brand.product_set.filter(production=True), many=True, context={"request": request})
+        favorites = FavoritesSerializer(request.user.favorites.all(), many=True)
 
         context = {
             "profile": profile.data,
-            "products": products.data
+            "production_count": brand.product_set.filter(production=True).count(),
+            "products": products.data,
+            "favorites": favorites.data,
         }
         return Response(context, status=status.HTTP_200_OK)
 
@@ -144,12 +154,16 @@ class ProductDetailView(views.APIView):
     def get(self, request, isbn_code):
         product = get_object_or_404(Product, isbn_code=isbn_code)
         videohosting = product.videohosting_set.all()
-        product = MediahostingProductSerializer(product, partial=True, context={"request": request})
+        product_serializer = MediahostingProductSerializer(product, partial=True, context={"request": request})
         videohosting = VideoHostingListSerializer(videohosting, many=True)
+        favorites = FavoritesSerializer(request.user.favorites.all(), many=True)
 
         context = {
-            "product": product.data,
-            "videohosting": videohosting.data
+            "product": product_serializer.data,
+            "videohosting": videohosting.data,
+            "favorites": favorites.data,
+            "published_count": product.videohosting_set.filter(access=True).count(),
+            "private_count": product.videohosting_set.filter(access=False).count()
         }
         return Response(context, status=status.HTTP_200_OK)
 

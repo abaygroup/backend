@@ -17,7 +17,7 @@ class ProductAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Описание товара', {'fields': ('title', 'brand', 'owner', 'category', 'subcategory', 'picture', 'about', 'body',)}),
         ('Цены', {'fields': ('first_price', 'last_price',)}),
-        ('Доступ', {'fields': ('observers',)}),
+        ('Доступ', {'fields': ('favorites', 'observers',)}),
         ('Продакшен', {'fields': ('production',)})
     )
     list_filter = ('production',)

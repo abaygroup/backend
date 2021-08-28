@@ -40,6 +40,8 @@ class Product(models.Model):
     isbn_code = models.UUIDField(verbose_name='Коды товара(ISBN, UPC, GTIN)', unique=True, default=uuid.uuid4, editable=False)
     observers = models.ManyToManyField(Brand, verbose_name='Студенты', related_name='observers', blank=True)
 
+    favorites = models.ManyToManyField(Brand, verbose_name='Избранные', related_name='favorites', blank=True)
+
     # Время
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
     last_update = models.DateTimeField(verbose_name='Последнее обновление', auto_now=True)
