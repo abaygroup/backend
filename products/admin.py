@@ -36,7 +36,7 @@ class CommentTable(admin.TabularInline):
     extra = 0
 
 class VidehostingAdmin(admin.ModelAdmin):
-    list_display = ('product', 'title', 'timestamp',)
+    list_display = ('title', 'product', 'timestamp',)
     fieldsets = (
         ('Описание', {'fields': ('title', 'product', 'body', 'frame_url', 'access',)}),
     )
