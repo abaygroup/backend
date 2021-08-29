@@ -7,7 +7,7 @@ from products.models import Product, SuperCategory, SubCategory, Videohosting
 from dashboard.models import Category
 from .serializers import ( MediahostingMainProductListSerializer, MediahostingProductSerializer,
                            SubCategorySerializer, SupCategorySerializer, FavoritesSerializer, FollowingSerializer,
-                           ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer)
+                           ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer, FeatureSerializer)
 
 
 # Main Page View
@@ -123,10 +123,23 @@ class AddToFavorite(views.APIView):
         product = get_object_or_404(Product, isbn_code=isbn_code)
         if product.favorites.filter(id=request.user.id).exists():
             product.favorites.remove(request.user)
-            return Response({"message": "{} deleted".format(product.title)}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "{} deleted".format(product.title)}, status=status.HTTP_200_OK)
         else:
             product.favorites.add(request.user)
-            return Response({"message": "{} added".format(product.title)}, status=status.HTTP_201_CREATED)
+            return Response({"message": "{} added".format(product.title)}, status=status.HTTP_200_OK)
+
+
+class FollowView(views.APIView):
+
+    def post(self, request, isbn_code):
+        product = get_object_or_404(Product, isbn_code=isbn_code)
+        if product.observers.filter(id=request.user.id).exists():
+            product.observers.remove(request.user)
+            return Response({"message": "You unfollow {}".format(product.title)}, status=status.HTTP_200_OK)
+        else:
+            product.observers.add(request.user)
+            return Response({"message": "You follow {}".format(product.title)}, status=status.HTTP_200_OK)
+
 
 
 # Profile Page View
@@ -136,7 +149,7 @@ class ProfileView(views.APIView):
         brand = get_object_or_404(Brand, brandname=brandname)
         profile = ProfileSerializer(brand.dashboard, partial=True, context={"request": request})
         products = MediahostingMainProductListSerializer(brand.product_set.filter(production=True), many=True, context={"request": request})
-        favorites = FavoritesSerializer(request.user.favorites.all(), many=True)
+        favorites = FavoritesSerializer(request.user.favorites.all(), many=True, context={"request": request})
 
         context = {
             "profile": profile.data,
@@ -154,16 +167,21 @@ class ProductDetailView(views.APIView):
     def get(self, request, isbn_code):
         product = get_object_or_404(Product, isbn_code=isbn_code)
         videohosting = product.videohosting_set.all()
+        features = product.features_set.all()
         product_serializer = MediahostingProductSerializer(product, partial=True, context={"request": request})
         videohosting = VideoHostingListSerializer(videohosting, many=True)
         favorites = FavoritesSerializer(request.user.favorites.all(), many=True)
+        followings = FollowingSerializer(request.user.observers.all(), many=True)
+        features = FeatureSerializer(features, many=True)
 
         context = {
             "product": product_serializer.data,
             "videohosting": videohosting.data,
             "favorites": favorites.data,
+            "followings": followings.data,
             "published_count": product.videohosting_set.filter(access=True).count(),
-            "private_count": product.videohosting_set.filter(access=False).count()
+            "private_count": product.videohosting_set.filter(access=False).count(),
+            "features": features.data
         }
         return Response(context, status=status.HTTP_200_OK)
 

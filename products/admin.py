@@ -5,7 +5,7 @@ from .models import Activity, Product, Features, Videohosting, Comment
 # Xарактеристики продукта
 class FeaturesTable(admin.TabularInline):
     model = Features
-    fields = ('product', 'label', 'value')
+    fields = ('product', 'category', 'label', 'value')
     extra = 0
 
 # ===============================================
