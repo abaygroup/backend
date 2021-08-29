@@ -47,8 +47,11 @@ class SubCategory(Category):
         verbose_name = 'Подкатегория'
         verbose_name_plural = 'Подкатегорий'
 
+# =====================================================================================
+
 
 # Модель Dashboard
+# =====================================================================================
 class Dashboard(models.Model):
     class CityType(models.TextChoices):
         ALMATY = 'ALMATY', 'Алматы'
@@ -119,9 +122,11 @@ class Dashboard(models.Model):
         verbose_name = 'Панель управление'
         verbose_name_plural = 'Панели управление'
 
+# =====================================================================================
 
 
 # Уведомление
+# =====================================================================================
 class Notification(models.Model):
     title = models.CharField(verbose_name='Тема', max_length=64)
     body = models.TextField(verbose_name='Описание')
@@ -139,4 +144,4 @@ class Notification(models.Model):
         verbose_name_plural = 'Уведомлений'
         ordering = ['-date_send']
 
-
+# =====================================================================================

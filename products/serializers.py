@@ -41,6 +41,7 @@ class VideohostingSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'body', 'frame_url', 'view', 'access', 'timestamp',)
 
 
+# ========================================================
 class CommentSerializer(serializers.ModelSerializer):
     owner = UserCreateSerializer(read_only=True)
     class Meta:
@@ -58,10 +59,11 @@ class FeatureSerializer(serializers.ModelSerializer):
         fields = ('id', 'label', 'value')
 
 
-# ========================================================
+
 
 
 # Serializer для Активность
+# ========================================================
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity

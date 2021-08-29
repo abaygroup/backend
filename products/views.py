@@ -13,7 +13,6 @@ from django.db.models import Q
 
 # Продукты
 # ==================================================================
-
 # Список продукты
 class ProductsView(views.APIView):
     permission_classes = [permissions.IsAuthenticated, ]
@@ -94,6 +93,7 @@ class DeletePictureView(views.APIView):
 
 
 # Видеохостинг
+# ========================================================================
 class VidehostingView(views.APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
@@ -144,6 +144,7 @@ class VidehostingDetailView(views.APIView):
 
 
 # Характеристики
+# ========================================================================
 class FeaturesView(views.APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 

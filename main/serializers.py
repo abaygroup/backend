@@ -8,11 +8,10 @@ from accounts.serializers import UserCreateSerializer
 # Product
 # ==========================================================================
 class MediahostingMainProductListSerializer(serializers.ModelSerializer):
-    owner = UserCreateSerializer(read_only=True)
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'about', 'production', 'owner',)
+        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'about',)
 
 
 class MediahostingProductSerializer(serializers.ModelSerializer):
@@ -51,6 +50,24 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
 # ================================================================================
 
+# Favorite and Following Serializer
+# ================================================================================
+class FollowingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'about',)
+
+
+class FavoritesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'about', )
+
+# ================================================================================
+
+
 # Profile
 # ================================================================================
 class ProfileSerializer(serializers.ModelSerializer):
@@ -58,27 +75,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dashboard
-        fields = ('id', 'brand', 'logotype', 'first_name', 'last_name', 'branding',)
+        fields = ('id', 'brand', 'first_name', 'last_name', 'logotype', 'branding',)
 
-
-# ================================================================================
-
-
-
-# Favorite and Following Serializer
-# ================================================================================
-class FavoritesSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Product
-        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'about', 'body', 'production', 'owner',)
-
-
-class FollowingSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Product
-        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'about', 'body', 'production', 'owner',)
 
 # ================================================================================
 

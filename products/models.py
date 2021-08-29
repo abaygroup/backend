@@ -7,6 +7,7 @@ from accounts.models import Brand
 
 
 # Недавняя активность
+# =============================================================================================================
 class Activity(models.Model):
     owner = models.ForeignKey(Brand, on_delete=models.CASCADE)
     message = models.CharField(verbose_name="Сообщение", max_length=200)
@@ -19,6 +20,7 @@ class Activity(models.Model):
     class Meta:
         verbose_name = 'Активность'
         verbose_name_plural = 'Активности'
+
 
 
 # Модель Product
@@ -81,6 +83,7 @@ class Product(models.Model):
 
 
 # Xарактеристика
+# =============================================================================================================
 class Features(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Продукт")
     category = models.ForeignKey(SuperCategory, on_delete=models.CASCADE, verbose_name="Категория", related_name="categories")
@@ -120,6 +123,8 @@ class Videohosting(models.Model):
 
 
 
+# Комментарий
+# =============================================================================================================
 class Comment(models.Model):
     videohosting = models.ForeignKey(Videohosting, on_delete=models.CASCADE, verbose_name='Видеохостинг')
     owner = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Автор')

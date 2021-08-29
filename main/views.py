@@ -112,7 +112,7 @@ class FavoritesView(views.APIView):
 
     def get(self, request):
         favorites_products = request.user.favorites.all()
-        favorites_products = FavoritesSerializer(favorites_products, many=True)
+        favorites_products = FavoritesSerializer(favorites_products, many=True, context={"request": request})
 
         return Response(favorites_products.data, status=status.HTTP_200_OK)
 
