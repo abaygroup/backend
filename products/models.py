@@ -2,8 +2,9 @@ from django.db import models
 import uuid
 import datetime
 from django.utils import timezone
-from dashboard.models import SuperCategory, SubCategory
+from dashboard.models import SuperCategory, SubCategory, Author
 from accounts.models import Brand
+from ckeditor.fields import RichTextField
 
 
 # Недавняя активность
@@ -33,7 +34,7 @@ class Product(models.Model):
     category = models.ForeignKey(SuperCategory, on_delete=models.CASCADE, verbose_name='Категория')
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='subcategory', verbose_name='Подкатегория')
     about = models.TextField(verbose_name='Кратко о продукте', max_length=300, blank=True, null=True)
-    body = models.TextField(verbose_name='Описание', blank=True, null=True)
+    body = RichTextField(verbose_name='Описание', blank=True, null=True)
     picture = models.ImageField(verbose_name='Изброжения', upload_to='dashboard/products/', blank=True, null=True)
     # Цены
     first_price = models.DecimalField(verbose_name='От', max_digits=9, decimal_places=2)
@@ -43,6 +44,8 @@ class Product(models.Model):
     observers = models.ManyToManyField(Brand, verbose_name='Студенты', related_name='observers', blank=True)
 
     favorites = models.ManyToManyField(Brand, verbose_name='Избранные', related_name='favorites', blank=True)
+
+    authors = models.ManyToManyField(Author, verbose_name='Авторы', related_name="authors")
 
     # Время
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)

@@ -84,7 +84,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dashboard
-        fields = ('id', 'brand', 'first_name', 'last_name', 'logotype', 'branding',)
+        fields = ('id', 'brand', 'full_name', 'logotype', 'branding',)
 
 
 # ================================================================================

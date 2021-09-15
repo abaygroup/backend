@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 class BrandManager(BaseUserManager):
     def create_user(self, brandname, email, password=None):
         if not brandname:
-            raise ValueError(_('Должно быть название бренда'))
+            raise ValueError(_('Должно быть имя пользователя'))
         if not email:
             raise ValueError(_('Бренд должен иметь адрес электронной почты'))
 
@@ -26,7 +26,7 @@ class BrandManager(BaseUserManager):
 
 # Brand модель
 class Brand(AbstractBaseUser, PermissionsMixin):
-    brandname = models.CharField(verbose_name=_('Имя бренда'), max_length=32, unique=True)
+    brandname = models.CharField(verbose_name=_('username'), max_length=32, unique=True)
     email = models.EmailField(verbose_name=_('email address'), max_length=64, unique=True)
     is_active = models.BooleanField(verbose_name=_('Статус активность'), help_text='Это статус активности пользователя.', default=True)
     is_staff = models.BooleanField(verbose_name=_('Статус партнера'), help_text='Статус бренда как нашего партнера.', default=False)

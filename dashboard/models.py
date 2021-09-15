@@ -53,33 +53,7 @@ class SubCategory(Category):
 # Модель Dashboard
 # =====================================================================================
 class Dashboard(models.Model):
-    class CityType(models.TextChoices):
-        ALMATY = 'ALMATY', 'Алматы'
-        NURSULTAN = 'NURSULTAN', 'Нұр-Сұлтан'
-        SHYMKENT = 'SHYMKENT', 'Шымкент'
-        AQTOBE = 'AQTOBE', 'Ақтөбе'
-        QARAGANDY = 'QARAGANDY', 'Қарағанды'
-        TARAZ = 'TARAZ', 'Тараз'
-        PAVLODAR = 'PAVLODAR', 'Павлодар'
-        OSKEMEN = 'OSKEMEN', 'Өскемен'
-        SEMEI = 'SEMEI', 'Семей'
-        ATYRAU = 'ATYRAU', 'Атырау'
-        QOSTANAI = 'QOSTANAI', 'Қостанай'
-        QYZYLORDA = 'QYZYLORDA', 'Қызылорда'
-        ORAL = 'ORAL', 'Орал'
-        PETROPAVL = 'PETROPAVL', 'Петропавл'
-        AQTAU = 'AQTAU', 'Ақтау'
-        TEMYRTAU = 'TEMYRTAU', 'Теміртау'
-        KOKSHETAU = 'KOKSHETAU', 'Көкшетау' 
-        TALDYQORGAN = 'TALDYQORGAN', 'Талдықорған' 
-        EKYBASTUZ = 'EKYBASTUZ', 'Екібастұз' 
-        RUDNY = 'RUDNY', 'Рудный' 
-        ZHANAOZEN = 'ZHANAOZEN', 'Жаңаөзен' 
-        BALQASH = 'BALQASH', 'Балқаш' 
-        KENTAU = 'KENTAU', 'Кентау' 
-        QASKELEN = 'QASKELEN', 'Қаскелең' 
-        SATBAEV = 'SATBAEV', 'Сәтбаев' 
-        QULSARY = 'QULSARY', 'Құлсары' 
+
 
     GENDER_CHOICES = (
         ('NOT_DEFINED', 'Не указано'),
@@ -100,12 +74,11 @@ class Dashboard(models.Model):
     body = models.TextField(verbose_name='О вас', max_length=300, blank=True, null=True)
 
     # Персональные данные
-    first_name = models.CharField(verbose_name='Ваше имя', max_length=32, blank=True, null=True)
-    last_name = models.CharField(verbose_name='Ваше фамилия', max_length=32, blank=True, null=True)
+    full_name = models.CharField(verbose_name='Ваше полная имя', max_length=64, blank=True, null=True)
+
     gender = models.CharField(verbose_name='Пол', max_length=12, choices=GENDER_CHOICES, default=GENDER_CHOICES[0][1])
     address = models.TextField(verbose_name='Адрес', max_length=255, blank=True, null=True)
     phone = PhoneField(verbose_name="Телефон", blank=True, help_text='Контакт телефона')
-    city = models.CharField(verbose_name='Город', max_length=64, choices=CityType.choices, default=CityType.ALMATY)
     reserve_email = models.EmailField(verbose_name='Резервный email', max_length=64, blank=True, null=True)
     website = models.CharField(verbose_name='Веб сайт', max_length=64, blank=True, null=True)
 
@@ -124,6 +97,25 @@ class Dashboard(models.Model):
 
 # =====================================================================================
 
+
+class Author(models.Model):
+
+    def validate_picture(picture):
+        filesize = picture.size
+        megabyte_limit = 2.0
+        if filesize > megabyte_limit*1024*1024:
+            raise ValidationError("Максимальный размер файла должно быть %sMB" % str(megabyte_limit))
+
+    picture = models.ImageField(validators=[validate_picture], upload_to='dashboard/authors/', blank=True, null=True, help_text='Максимальный размер файла 2MB')
+    full_name = models.CharField(verbose_name='Полная имя автора', max_length=64)
+    about = models.TextField(verbose_name='О авторе')
+
+    def __str__(self):
+        return self.full_name
+
+    class Meta:
+        verbose_name = 'Автор'
+        verbose_name_plural = 'Авторы'
 
 # Уведомление
 # =====================================================================================

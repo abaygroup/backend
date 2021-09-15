@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'phone_field',
+    'ckeditor',
 
     # Приложение
     'main.apps.MainConfig',

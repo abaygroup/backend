@@ -1,13 +1,13 @@
 from django.contrib import admin
-from .models import Dashboard, Notification, SuperCategory, SubCategory
+from .models import Dashboard, Notification, SuperCategory, SubCategory, Author
 
 
 class DashboradAdmin(admin.ModelAdmin):
-    list_display = ('brand', 'branch', 'first_name', 'last_name', 'city', 'website', 'for_clients', 'branding',)
+    list_display = ('brand', 'branch', 'full_name', 'website', 'for_clients', 'branding',)
     list_filter = ('for_clients',)
     fieldsets = (
         ('Направление бренда или пользователья', {'fields': ('brand', 'logotype', 'branch',)}),
-        ('Персональные данные', {'fields': ('first_name', 'last_name', 'gender', 'city', 'phone', 'address', 'reserve_email', 'website')}),
+        ('Персональные данные', {'fields': ('full_name', 'gender', 'phone', 'address', 'reserve_email', 'website')}),
         ('Статусы', {'fields': ('for_clients', 'branding',)}),
     )
 
@@ -33,5 +33,6 @@ class SuperCategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Dashboard, DashboradAdmin)
 admin.site.register(Notification)
+admin.site.register(Author)
 admin.site.register(SuperCategory, SuperCategoryAdmin)
 admin.site.register(SubCategory)
