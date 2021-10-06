@@ -1,17 +1,25 @@
 from rest_framework import serializers
 from .models import Post
-from products.models import Product, SuperCategory, SubCategory, Videohosting, Features
+from products.models import Product, SuperCategory, SubCategory, Videohosting, Features, Author
 from dashboard.models import Dashboard
 from accounts.serializers import UserCreateSerializer
 from dashboard.serializers import SubCategorySerializer
 
+
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ("id", "full_name", "picture", "about", )
+
+
 # Product
 # ==========================================================================
 class MediahostingMainProductListSerializer(serializers.ModelSerializer):
+    authors = AuthorSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'about',)
+        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'authors',)
 
 
 class MediahostingProductSerializer(serializers.ModelSerializer):
@@ -62,17 +70,19 @@ class SubCategorySerializer(serializers.ModelSerializer):
 # Favorite and Following Serializer
 # ================================================================================
 class FollowingSerializer(serializers.ModelSerializer):
+    authors = AuthorSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'about',)
+        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'authors',)
 
 
 class FavoritesSerializer(serializers.ModelSerializer):
+    authors = AuthorSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'about', )
+        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'authors', )
 
 # ================================================================================
 

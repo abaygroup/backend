@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from accounts.serializers import UserCreateSerializer
-from .models import Activity, Product, Features, Videohosting, Comment
+from .models import Activity, Product, Features, Videohosting
 from dashboard.serializers import SuperCategorySerializer, SubCategorySerializer
 
 # Serializer для Продукт
@@ -42,12 +42,6 @@ class VideohostingSerializer(serializers.ModelSerializer):
 
 
 # ========================================================
-class CommentSerializer(serializers.ModelSerializer):
-    owner = UserCreateSerializer(read_only=True)
-    class Meta:
-        model = Comment
-        exclude = ('videohosting',)
-
 
 
 

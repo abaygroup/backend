@@ -7,7 +7,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from products.models import Product, SubCategory
 from products.serializers import ( ProductListSerializer, ProductDetailSerializer,
                                    FeatureSerializer,
-                                   VideohostingSerializer, CommentSerializer)
+                                   VideohostingSerializer)
 
 from django.db.models import Q
 
@@ -115,11 +115,9 @@ class VidehostingDetailView(views.APIView):
         video = product.videohosting_set.get(pk=pk)
         comment = video.comment_set.all()
         video_serializer = VideohostingSerializer(video)
-        comment_serializer = CommentSerializer(comment, many=True)
         context = {
             'product': {"owner": product.owner.brandname, "isbn_code": product.isbn_code},
             'video': video_serializer.data,
-            'comment': comment_serializer.data,
         }
         return Response(context, status=status.HTTP_200_OK)
 

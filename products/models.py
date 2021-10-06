@@ -102,6 +102,23 @@ class Features(models.Model):
         verbose_name_plural = "Xарактеристики"
 
 
+# Раздел
+# =========================================================================
+class Chapter(models.Model):
+    album = models.ImageField(verbose_name='Альбом', upload_to='dashboard/chapters/', blank=True, null=True)
+    name = models.CharField(verbose_name='Название', max_length=64)
+    about = models.TextField(verbose_name='Кратко о разделе', max_length=300)
+    timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Раздел"
+        verbose_name_plural = "Разделы"
+        ordering = ['timestamp']
+
+
 
 # Видеохостинг
 # =========================================================================
@@ -111,6 +128,7 @@ class Videohosting(models.Model):
     frame_url = models.CharField(verbose_name='Ссылка', max_length=255)
     access = models.BooleanField(verbose_name='Доступ к видео', default=True)
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
 
     # Просмотры
@@ -123,23 +141,5 @@ class Videohosting(models.Model):
         verbose_name = "Видеохостинг"
         verbose_name_plural = "Видеохостинг"
         ordering = ['timestamp']
-
-
-
-# Комментарий
-# =============================================================================================================
-class Comment(models.Model):
-    videohosting = models.ForeignKey(Videohosting, on_delete=models.CASCADE, verbose_name='Видеохостинг')
-    owner = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Автор')
-    body = models.TextField(verbose_name='Тело комментарий', max_length=300)
-    timestamp = models.DateTimeField(verbose_name='Дата написание', auto_now_add=True)
-
-    def __str__(self):
-        return "{}|{}".format(self.owner, self.videohosting)
-
-
-    class Meta:
-        verbose_name = 'Комментарии'
-        verbose_name_plural = 'Комментарии'
 
 
