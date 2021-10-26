@@ -12,7 +12,7 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG") == "True"
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'api.abaystreet.com']
+ALLOWED_HOSTS = []
 
 
 # Определение приложения
@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'django_cleanup.apps.CleanupConfig',
     'rest_framework',
     'corsheaders',
@@ -34,9 +35,10 @@ INSTALLED_APPS = [
     'ckeditor',
 
     # Приложение
-    'main.apps.MainConfig',
+
     'accounts.apps.AccountsConfig',
-    'dashboard.apps.DashboardConfig',
+    'main.apps.MainConfig',
+    'profile.apps.ProfileConfig',
     'products.apps.ProductsConfig',
 ]
 
@@ -57,7 +59,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Кастомный пользовательский модель
-AUTH_USER_MODEL = 'accounts.Brand'
+AUTH_USER_MODEL = 'accounts.User'
 
 # ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ
 MIDDLEWARE = [
@@ -164,11 +166,11 @@ SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-
 }
 
 # Настройка Djoser 
-DOMAIN = ('dashboard.abaystreet.com')
+# DOMAIN = ('profile.abaystreet.com')
+DOMAIN = ('localhost:3000')
 SITE_NAME = ('abaystreet')
 
 DJOSER = {
@@ -181,7 +183,7 @@ DJOSER = {
     'SET_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'ACTIVATION_URL': 'accounts/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
 
     'SERIALIZERS': {

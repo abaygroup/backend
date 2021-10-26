@@ -1,14 +1,13 @@
 from django.db import models
-from accounts.models import Brand
+from accounts.models import User
 from django.core.exceptions import ValidationError
-from phone_field import PhoneField
 
 
 # Категория
 class Category(models.Model):
     name = models.CharField(verbose_name='Название', max_length=255, unique=True)
     slug = models.SlugField(verbose_name='Ключовой адрес', max_length=255, unique=True)
-    image = models.ImageField(verbose_name='Изображение', blank=True, null=True, upload_to='dashboard/categories/')
+    image = models.ImageField(verbose_name='Изображение', blank=True, null=True, upload_to='profile/categories/')
     super_category = models.ForeignKey('SuperCategory', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Надкатегория')
 
 
@@ -50,16 +49,9 @@ class SubCategory(Category):
 # =====================================================================================
 
 
-# Модель Dashboard
+# Модель Profile
 # =====================================================================================
-class Dashboard(models.Model):
-
-
-    GENDER_CHOICES = (
-        ('NOT_DEFINED', 'Не указано'),
-        ('MALE', 'Мужской'),
-        ('FAMALE', 'Женский'),
-    )
+class Profile(models.Model):
 
     def validate_logotype(logotype):
         filesize = logotype.size
@@ -68,32 +60,26 @@ class Dashboard(models.Model):
             raise ValidationError("Максимальный размер файла должно быть %sMB" % str(megabyte_limit))
 
     # Направление бренда или магазина
-    brand = models.OneToOneField(Brand, on_delete=models.CASCADE, verbose_name='Бренд')
-    logotype = models.ImageField(verbose_name='Логотип', validators=[validate_logotype], upload_to='dashboard/avatar/', blank=True, null=True, help_text='Максимальный размер файла 2MB')
-    branch = models.ForeignKey(SuperCategory, on_delete=models.PROTECT, null=True, blank=True, verbose_name='Отрасль')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    avatar = models.ImageField(verbose_name='Аватар', validators=[validate_logotype], upload_to='profile/avatar/', blank=True, null=True, help_text='Максимальный размер файла 2MB')
+    category = models.ForeignKey(SuperCategory, on_delete=models.PROTECT, null=True, blank=True, verbose_name='Категория')
     body = models.TextField(verbose_name='О вас', max_length=300, blank=True, null=True)
 
     # Персональные данные
-    full_name = models.CharField(verbose_name='Ваше полная имя', max_length=64, blank=True, null=True)
-
-    gender = models.CharField(verbose_name='Пол', max_length=12, choices=GENDER_CHOICES, default=GENDER_CHOICES[0][1])
     address = models.TextField(verbose_name='Адрес', max_length=255, blank=True, null=True)
-    phone = PhoneField(verbose_name="Телефон", blank=True, help_text='Контакт телефона')
-    reserve_email = models.EmailField(verbose_name='Резервный email', max_length=64, blank=True, null=True)
-    website = models.CharField(verbose_name='Веб сайт', max_length=64, blank=True, null=True)
-
+    # reserve_email = models.EmailField(verbose_name='Резервный email', max_length=64, blank=True, null=True)
+    # website = models.CharField(verbose_name='Веб сайт', max_length=64, blank=True, null=True)
 
     # Статусы
     branding = models.BooleanField(verbose_name='Брендинг', default=False)
-    for_clients = models.BooleanField(verbose_name='Вы открываете это для клиента?', default=False)
 
 
     def __str__(self):
-        return self.brand.brandname
+        return self.user.username
 
     class Meta:
-        verbose_name = 'Панель управление'
-        verbose_name_plural = 'Панели управление'
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
 
 # =====================================================================================
 
@@ -106,7 +92,7 @@ class Author(models.Model):
         if filesize > megabyte_limit*1024*1024:
             raise ValidationError("Максимальный размер файла должно быть %sMB" % str(megabyte_limit))
 
-    picture = models.ImageField(validators=[validate_picture], upload_to='dashboard/authors/', blank=True, null=True, help_text='Максимальный размер файла 2MB')
+    picture = models.ImageField(validators=[validate_picture], upload_to='profile/authors/', blank=True, null=True, help_text='Максимальный размер файла 2MB')
     full_name = models.CharField(verbose_name='Полная имя автора', max_length=64)
     about = models.TextField(verbose_name='О авторе')
 
@@ -122,8 +108,8 @@ class Author(models.Model):
 class Notification(models.Model):
     title = models.CharField(verbose_name='Тема', max_length=64)
     body = models.TextField(verbose_name='Описание')
-    to_send = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='От кого', related_name='send_to')
-    from_send = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Кому')
+    to_send = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='От кого', related_name='send_to')
+    from_send = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Кому')
     date_send = models.DateTimeField(verbose_name='Дата отправление', auto_now_add=True)
 
     checked = models.BooleanField(verbose_name='Проверка', default=False)

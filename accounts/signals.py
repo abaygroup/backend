@@ -1,14 +1,14 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import Brand
-from dashboard.models import Dashboard
+from .models import User
+from profile.models import Profile
 
-@receiver(post_save, sender=Brand)
-def create_brand_admin(sender, instance, created, **kwargs):
+@receiver(post_save, sender=User)
+def create_user_admin(sender, instance, created, **kwargs):
     if created:
-        Dashboard.objects.create(brand=instance)
+        Profile.objects.create(user=instance)
 
-@receiver(post_save, sender=Brand)
-def save_brand_admin(sender, instance, **kwargs):
-    instance.dashboard.save()
+@receiver(post_save, sender=User)
+def save_user_admin(sender, instance, **kwargs):
+    instance.profile.save()

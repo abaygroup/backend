@@ -5,9 +5,11 @@ from rest_framework import serializers
 User = get_user_model()
 
 class UserCreateSerializer(UserCreateSerializer):
+    gender = serializers.CharField(source='get_gender_display')
+
     class Meta(UserCreateSerializer.Meta):
         model = User
-        fields = ('id', 'email', 'brandname', 'password', 'is_staff', 'is_active',)
+        fields = ('id', 'username', 'email', 'profile_name', 'birthday', 'gender', 'phone', 'is_active', 'is_staff',)
 
 
 

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from accounts.serializers import UserCreateSerializer
 from .models import Activity, Product, Features, Videohosting
-from dashboard.serializers import SuperCategorySerializer, SubCategorySerializer
+from profile.serializers import SuperCategorySerializer, SubCategorySerializer
 
 # Serializer для Продукт
 # ========================================================

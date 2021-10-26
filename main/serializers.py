@@ -1,25 +1,19 @@
 from rest_framework import serializers
-from .models import Post
-from products.models import Product, SuperCategory, SubCategory, Videohosting, Features, Author
-from dashboard.models import Dashboard
+# from .models import Post
+from products.models import Product, SuperCategory, SubCategory, Videohosting, Features
+from profile.models import Profile
 from accounts.serializers import UserCreateSerializer
-from dashboard.serializers import SubCategorySerializer
-
-
-class AuthorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Author
-        fields = ("id", "full_name", "picture", "about", )
+from profile.serializers import SubCategorySerializer
 
 
 # Product
 # ==========================================================================
 class MediahostingMainProductListSerializer(serializers.ModelSerializer):
-    authors = AuthorSerializer(read_only=True, many=True)
+    authors = UserCreateSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'authors',)
+        fields = ('id', 'title', 'brand', 'album', 'isbn_code', 'authors', 'observers', 'favorites',)
 
 
 class MediahostingProductSerializer(serializers.ModelSerializer):
@@ -28,7 +22,8 @@ class MediahostingProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'brand', 'subcategory', 'picture', 'about', 'body', 'isbn_code', 'production', 'owner', 'timestamp', 'last_update',)
+        fields = ('id', 'title', 'brand', 'subcategory', 'album', 'about', 'body', 'isbn_code', 'production', 'owner', 'timestamp', 'last_update',)
+
 
 
 
@@ -70,19 +65,19 @@ class SubCategorySerializer(serializers.ModelSerializer):
 # Favorite and Following Serializer
 # ================================================================================
 class FollowingSerializer(serializers.ModelSerializer):
-    authors = AuthorSerializer(read_only=True, many=True)
+    authors = UserCreateSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'authors',)
+        fields = ('id', 'title', 'brand', 'album', 'isbn_code', 'authors', 'observers', 'favorites',)
 
 
 class FavoritesSerializer(serializers.ModelSerializer):
-    authors = AuthorSerializer(read_only=True, many=True)
+    authors = UserCreateSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'brand', 'picture', 'isbn_code', 'authors', )
+        fields = ('id', 'title', 'brand', 'album', 'isbn_code', 'authors', 'observers', 'favorites',)
 
 # ================================================================================
 
@@ -90,18 +85,18 @@ class FavoritesSerializer(serializers.ModelSerializer):
 # Profile
 # ================================================================================
 class ProfileSerializer(serializers.ModelSerializer):
-    brand = UserCreateSerializer(read_only=True)
+    user = UserCreateSerializer(read_only=True)
 
     class Meta:
-        model = Dashboard
-        fields = ('id', 'brand', 'full_name', 'logotype', 'branding',)
+        model = Profile
+        fields = ('id', 'user', 'avatar', 'branding',)
 
 
 # ================================================================================
 
 
-class PostSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Post
-        fields = ('id', 'title', 'description', 'date_created',)
+# class PostSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Post
+#         fields = ('id', 'title', 'description', 'date_created',)

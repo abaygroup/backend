@@ -1,14 +1,14 @@
 from rest_framework.generics import views, UpdateAPIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
-from .models import Brand
+from .models import User
 from .serializers import UserCreateSerializer, ChangePasswordSerializer
 
 class Users(views.APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
 
     def get(self, request):
-        brands = Brand.objects.all()
+        brands = User.objects.all()
         serializer = UserCreateSerializer(brands, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -17,7 +17,7 @@ class Users(views.APIView):
 # Password change View
 class ChangePasswordView(UpdateAPIView):
     serializer_class = ChangePasswordSerializer
-    model = Brand
+    model = User
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_object(self, queryset=None):

@@ -2,12 +2,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework import views, status, permissions
 from rest_framework.response import Response
 
-from accounts.models import Brand
+from accounts.models import User
 from products.models import Product, SuperCategory, SubCategory, Videohosting
-from dashboard.models import Category
+from profile.models import Category
 from .serializers import ( MediahostingMainProductListSerializer, MediahostingProductSerializer,
                            SubCategorySerializer, SupCategorySerializer, FavoritesSerializer, FollowingSerializer,
-                           ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer, FeatureSerializer)
+                           ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer, FeatureSerializer,
+                          )
 
 
 # Main Page View
@@ -17,8 +18,10 @@ class MainAPIView(views.APIView):
     def get(self, request):
         future_products = Product.objects.filter(production=False)[:4]
         last_products = Product.objects.filter(production=True)[:8]
+
         last_products_serializer = MediahostingMainProductListSerializer(last_products, many=True, context={"request": request})
         future_products_serializer = MediahostingMainProductListSerializer(future_products, many=True, context={"request": request})
+
         if request.user.is_authenticated:
             my_mediahosting = request.user.product_set.filter(production=True)[:8]
             favorites_products = request.user.favorites.all()[:8]
@@ -145,15 +148,15 @@ class FollowView(views.APIView):
 # Profile Page View
 class ProfileView(views.APIView):
 
-    def get(self, request, brandname):
-        brand = get_object_or_404(Brand, brandname=brandname)
-        profile = ProfileSerializer(brand.dashboard, partial=True, context={"request": request})
-        products = MediahostingMainProductListSerializer(brand.product_set.filter(production=True), many=True, context={"request": request})
+    def get(self, request, username):
+        user = get_object_or_404(User, username=username)
+        profile = ProfileSerializer(user.profile, partial=True, context={"request": request})
+        products = MediahostingMainProductListSerializer(user.product_set.filter(production=True), many=True, context={"request": request})
         favorites = FavoritesSerializer(request.user.favorites.all(), many=True, context={"request": request})
 
         context = {
             "profile": profile.data,
-            "production_count": brand.product_set.filter(production=True).count(),
+            "production_count": user.product_set.filter(production=True).count(),
             "products": products.data,
             "favorites": favorites.data,
         }
@@ -169,38 +172,38 @@ class ProductDetailView(views.APIView):
         videohosting = product.videohosting_set.all()
         features = product.features_set.all()
         product_serializer = MediahostingProductSerializer(product, partial=True, context={"request": request})
-        videohosting = VideoHostingListSerializer(videohosting, many=True)
+        videohosting_serializer = VideoHostingListSerializer(videohosting, many=True, context={"request": request})
         favorites = FavoritesSerializer(request.user.favorites.all(), many=True)
         followings = FollowingSerializer(request.user.observers.all(), many=True)
         features = FeatureSerializer(features, many=True)
 
         context = {
             "product": product_serializer.data,
-            "videohosting": videohosting.data,
+            "videohosting": videohosting_serializer.data,
             "favorites": favorites.data,
             "followings": followings.data,
-            "published_count": product.videohosting_set.filter(access=True).count(),
-            "private_count": product.videohosting_set.filter(access=False).count(),
-            "features": features.data
+            "features": features.data,
+            "published_count": videohosting.filter(access=True).count(),
+            "private_count": videohosting.filter(access=False).count()
         }
         return Response(context, status=status.HTTP_200_OK)
 
 
-# Videohosting View
-class VideoHostingView(views.APIView):
-
-    def get(self, request, isbn_code, id):
-        product = get_object_or_404(Product, isbn_code=isbn_code)
-        videohosting = product.videohosting_set.filter(access=True)
-        video = get_object_or_404(Videohosting, id=id)
-        video.view += 1
-        video.save()
-        video = VideoHostingSerializer(video, partial=True)
-        videohosting = VideoHostingListSerializer(videohosting, many=True)
-
-        context = {
-            "video": video.data,
-            "videohosting": videohosting.data
-        }
-
-        return Response(context, status=status.HTTP_200_OK)
+# # Videohosting View
+# class VideoHostingView(views.APIView):
+#
+#     def get(self, request, isbn_code, id):
+#         product = get_object_or_404(Product, isbn_code=isbn_code)
+#         videohosting = product.videohosting_set.filter(access=True)
+#         video = get_object_or_404(Videohosting, id=id)
+#         video.view += 1
+#         video.save()
+#         video = VideoHostingSerializer(video, partial=True)
+#         videohosting = VideoHostingListSerializer(videohosting, many=True)
+#
+#         context = {
+#             "video": video.data,
+#             "videohosting": videohosting.data
+#         }
+#
+#         return Response(context, status=status.HTTP_200_OK)

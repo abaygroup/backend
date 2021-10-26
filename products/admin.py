@@ -8,22 +8,22 @@ class FeaturesTable(admin.TabularInline):
     fields = ('product', 'category', 'label', 'value')
     extra = 0
 
+
 # ===============================================
 
 
 # Admin продукта
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title', 'owner', 'first_price', 'last_price', 'timestamp', 'last_update')
+    list_display = ('title', 'owner', 'timestamp', 'last_update')
     fieldsets = (
-        ('Описание товара', {'fields': ('title', 'brand', 'owner', 'category', 'subcategory', 'picture', 'about', 'body',)}),
-        ('Цены', {'fields': ('first_price', 'last_price',)}),
+        ('Описание товара', {'fields': ('title', 'brand', 'owner', 'category', 'subcategory', 'album', 'about', 'body',)}),
         ('Доступ', {'fields': ('favorites', 'observers', 'authors', )}),
         ('Продакшен', {'fields': ('production',)})
     )
     list_filter = ('production',)
     search_fields = ('title', 'about', 'body', 'category',)
     ordering = ('-timestamp',)
-    inlines = [ FeaturesTable, ]
+    inlines = [FeaturesTable,]
     filter_horizontal = ()
 # ===============================================
 

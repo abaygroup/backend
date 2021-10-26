@@ -2,15 +2,15 @@ from django.db import models
 import uuid
 import datetime
 from django.utils import timezone
-from dashboard.models import SuperCategory, SubCategory, Author
-from accounts.models import Brand
+from profile.models import SuperCategory, SubCategory
+from accounts.models import User
 from ckeditor.fields import RichTextField
 
 
 # Недавняя активность
 # =============================================================================================================
 class Activity(models.Model):
-    owner = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.CharField(verbose_name="Сообщение", max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     expiration_date = models.DateTimeField()
@@ -28,24 +28,21 @@ class Activity(models.Model):
 # =========================================================================
 class Product(models.Model):
     # Описание
-    owner = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name='Владелец')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     title = models.CharField(verbose_name='Заголовка', max_length=40)
     brand = models.CharField(verbose_name="Бренд", max_length=32)
     category = models.ForeignKey(SuperCategory, on_delete=models.CASCADE, verbose_name='Категория')
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='subcategory', verbose_name='Подкатегория')
     about = models.TextField(verbose_name='Кратко о продукте', max_length=300, blank=True, null=True)
     body = RichTextField(verbose_name='Описание', blank=True, null=True)
-    picture = models.ImageField(verbose_name='Изброжения', upload_to='dashboard/products/', blank=True, null=True)
-    # Цены
-    first_price = models.DecimalField(verbose_name='От', max_digits=9, decimal_places=2)
-    last_price = models.DecimalField(verbose_name='До', max_digits=9, decimal_places=2)
+    album = models.ImageField(verbose_name='Альбом', upload_to='profile/products/', blank=True, null=True)
+
     # Код товара
     isbn_code = models.UUIDField(verbose_name='Коды товара(ISBN, UPC, GTIN)', unique=True, default=uuid.uuid4, editable=False)
-    observers = models.ManyToManyField(Brand, verbose_name='Студенты', related_name='observers', blank=True)
 
-    favorites = models.ManyToManyField(Brand, verbose_name='Избранные', related_name='favorites', blank=True)
-
-    authors = models.ManyToManyField(Author, verbose_name='Авторы', related_name="authors")
+    observers = models.ManyToManyField(User, verbose_name='Подписчики', related_name='observers', blank=True)
+    favorites = models.ManyToManyField(User, verbose_name='Избранные', related_name='favorites', blank=True)
+    authors = models.ManyToManyField(User, verbose_name='Авторы', related_name="authors")
 
     # Время
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
@@ -79,8 +76,8 @@ class Product(models.Model):
 
 
     class Meta:
-        verbose_name = 'Продукт'
-        verbose_name_plural = 'Продукты'
+        verbose_name = 'Релиз'
+        verbose_name_plural = 'Релизы'
         ordering = ('-timestamp',)
 
 
@@ -88,7 +85,7 @@ class Product(models.Model):
 # Xарактеристика
 # =============================================================================================================
 class Features(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Продукт")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Релиз")
     category = models.ForeignKey(SuperCategory, on_delete=models.CASCADE, verbose_name="Категория", related_name="categories")
     label = models.CharField(verbose_name="Названия", max_length=64)
     value = models.CharField(verbose_name="Значение", max_length=64, null=True, blank=True)
@@ -104,20 +101,21 @@ class Features(models.Model):
 
 # Раздел
 # =========================================================================
-class Chapter(models.Model):
-    album = models.ImageField(verbose_name='Альбом', upload_to='dashboard/chapters/', blank=True, null=True)
-    name = models.CharField(verbose_name='Название', max_length=64)
-    about = models.TextField(verbose_name='Кратко о разделе', max_length=300)
-    timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = "Раздел"
-        verbose_name_plural = "Разделы"
-        ordering = ['timestamp']
-
+# class Chapter(models.Model):
+#     album = models.ImageField(verbose_name='Альбом', upload_to='profile/chapters/', blank=True, null=True)
+#     name = models.CharField(verbose_name='Название', max_length=64)
+#     about = models.TextField(verbose_name='Кратко о разделе', max_length=300, blank=True)
+#     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
+#
+#     release = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Релиз')
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         verbose_name = "Раздел"
+#         verbose_name_plural = "Разделы"
+#         ordering = ['timestamp']
 
 
 # Видеохостинг
@@ -129,7 +127,7 @@ class Videohosting(models.Model):
     access = models.BooleanField(verbose_name='Доступ к видео', default=True)
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Релиз')
 
     # Просмотры
     view = models.IntegerField(verbose_name='Просмотров', default=0)
@@ -141,5 +139,3 @@ class Videohosting(models.Model):
         verbose_name = "Видеохостинг"
         verbose_name_plural = "Видеохостинг"
         ordering = ['timestamp']
-
-
