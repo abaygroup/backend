@@ -12,7 +12,7 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG") == "True"
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["abaygroup.pythonanywhere.com", "localhost", "127.0.0.1",]
 
 
 # Определение приложения
