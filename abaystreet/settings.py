@@ -96,17 +96,25 @@ WSGI_APPLICATION = 'abaystreet.wsgi.application'
 
 # База данных
 # ===============================================================
-# Настройка Postgres
+# Настройка sqlite
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT')
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'abaystreet.sqlite3',
     }
 }
+
+# Настройка Postgres
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         'PASSWORD': config('DB_PASSWORD'),
+#         'HOST': config('DB_HOST'),
+#         'PORT': config('DB_PORT')
+#     }
+# }
 # ===============================================================
 
 
@@ -170,6 +178,7 @@ SIMPLE_JWT = {
 
 # Настройка Djoser 
 # DOMAIN = ('profile.abaystreet.com')
+
 DOMAIN = ('localhost:3000')
 SITE_NAME = ('abaystreet')
 
