@@ -12,5 +12,5 @@ urlpatterns = [
     path('follow/<isbn_code>/', views.FollowView.as_view()),
     path('profile/<username>/', views.ProfileView.as_view()),
     path('product/<isbn_code>/', views.ProductDetailView.as_view()),
-    # path('product/<isbn_code>/videohosting/<id>/', views.VideoHostingView.as_view())
+    path('product/<isbn_code>/videohosting/<id>/', views.VideoHostingView.as_view())
 ]

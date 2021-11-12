@@ -189,21 +189,21 @@ class ProductDetailView(views.APIView):
         return Response(context, status=status.HTTP_200_OK)
 
 
-# # Videohosting View
-# class VideoHostingView(views.APIView):
-#
-#     def get(self, request, isbn_code, id):
-#         product = get_object_or_404(Product, isbn_code=isbn_code)
-#         videohosting = product.videohosting_set.filter(access=True)
-#         video = get_object_or_404(Videohosting, id=id)
-#         video.view += 1
-#         video.save()
-#         video = VideoHostingSerializer(video, partial=True)
-#         videohosting = VideoHostingListSerializer(videohosting, many=True)
-#
-#         context = {
-#             "video": video.data,
-#             "videohosting": videohosting.data
-#         }
-#
-#         return Response(context, status=status.HTTP_200_OK)
+# Videohosting View
+class VideoHostingView(views.APIView):
+
+    def get(self, request, isbn_code, id):
+        product = get_object_or_404(Product, isbn_code=isbn_code)
+        videohosting = product.videohosting_set.filter(access=True)
+        video = get_object_or_404(Videohosting, id=id)
+        video.view += 1
+        video.save()
+        video = VideoHostingSerializer(video, partial=True)
+        videohosting = VideoHostingListSerializer(videohosting, many=True)
+
+        context = {
+            "video": video.data,
+            "videohosting": videohosting.data
+        }
+
+        return Response(context, status=status.HTTP_200_OK)

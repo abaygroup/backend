@@ -177,9 +177,9 @@ SIMPLE_JWT = {
 }
 
 # Настройка Djoser 
-# DOMAIN = ('profile.abaystreet.com')
+DOMAIN = ('mediahosting.vercel.app')
 
-DOMAIN = ('localhost:3000')
+# DOMAIN = ('localhost:3000')
 SITE_NAME = ('abaystreet')
 
 DJOSER = {
@@ -190,7 +190,7 @@ DJOSER = {
     'SEND_CONFIRMATION_EMAIL': True,
     'SET_USERNAME_RETYPE': True,
     'SET_PASSWORD_RETYPE': True,
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'accounts/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'accounts/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
