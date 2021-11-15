@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from accounts.models import User
 from products.models import Product, SuperCategory, SubCategory, Videohosting
-from profile.models import Category
+from profile.models import Category, Profile
 from .serializers import ( MediahostingMainProductListSerializer, MediahostingProductSerializer,
                            SubCategorySerializer, SupCategorySerializer, FavoritesSerializer, FollowingSerializer,
                            ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer, FeatureSerializer,
@@ -18,9 +18,11 @@ class MainAPIView(views.APIView):
     def get(self, request):
         future_products = Product.objects.filter(production=False)[:4]
         last_products = Product.objects.filter(production=True)[:8]
+        authors = Profile.objects.all()[:5]
 
         last_products_serializer = MediahostingMainProductListSerializer(last_products, many=True, context={"request": request})
         future_products_serializer = MediahostingMainProductListSerializer(future_products, many=True, context={"request": request})
+        authors_serializer = ProfileSerializer(authors, many=True, context={"request": request})
 
         if request.user.is_authenticated:
             my_mediahosting = request.user.product_set.filter(production=True)[:8]
@@ -36,12 +38,14 @@ class MainAPIView(views.APIView):
                 "favorites_products": favorites_products.data,
                 "following_products": following_products.data,
                 "my_mediahosting": my_mediahosting.data,
-                "last_products": last_products_serializer.data
+                "last_products": last_products_serializer.data,
+                "authors": authors_serializer.data
             }
         else:
             context = {
                 "future_products": future_products_serializer.data,
-                "last_products": last_products_serializer.data
+                "last_products": last_products_serializer.data,
+                "authors": authors_serializer.data
             }
 
         return Response(context, status=status.HTTP_200_OK)
