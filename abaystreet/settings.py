@@ -177,7 +177,7 @@ SIMPLE_JWT = {
 }
 
 # Настройка Djoser 
-DOMAIN = ('mediahosting.vercel.app')
+DOMAIN = ('mediahosting.abaystreet.com')
 
 # DOMAIN = ('localhost:3000')
 SITE_NAME = ('abaystreet')
