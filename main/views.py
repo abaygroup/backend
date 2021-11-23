@@ -9,6 +9,8 @@ from .serializers import ( MediahostingMainProductListSerializer, MediahostingPr
                            SubCategorySerializer, SupCategorySerializer, FavoritesSerializer, FollowingSerializer,
                            ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer, FeatureSerializer,
                           )
+from accounts.serializers import UserUpdateSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 # Main Page View
@@ -151,6 +153,7 @@ class FollowView(views.APIView):
 
 # Profile Page View
 class ProfileView(views.APIView):
+    parser_classes = [MultiPartParser, FormParser, ]
 
     def get(self, request, username):
         user = get_object_or_404(User, username=username)
@@ -165,6 +168,17 @@ class ProfileView(views.APIView):
             "favorites": favorites.data,
         }
         return Response(context, status=status.HTTP_200_OK)
+
+    def put(self, request, username):
+        user = get_object_or_404(User, username=username)
+        user_serializer = UserUpdateSerializer(user, data=request.data)
+        profile_serializer = ProfileSerializer(user.profile, data=request.data, partial=True, context={"request": request})
+        if user_serializer.is_valid() and profile_serializer.is_valid():
+            user_serializer.save()
+            profile_serializer.save()
+            return Response({"success": "Profile edited successfully"})
+
+        return Response({"error": "Error to profile edited!"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
