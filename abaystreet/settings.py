@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'abaystreet.wsgi.application'
 
 # База данных
 # ===============================================================
-Настройка sqlite
+# Настройка sqlite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
