@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'abaystreet.wsgi.application'
 
 # База данных
 # ===============================================================
-# Настройка sqlite
+Настройка sqlite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -193,7 +193,7 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'accounts/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'accounts/activate/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True,
+    # 'SEND_ACTIVATION_EMAIL': True,
 
     'SERIALIZERS': {
         'user_create': 'accounts.serializers.UserCreateSerializer',

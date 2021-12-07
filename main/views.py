@@ -184,6 +184,7 @@ class ProfileView(views.APIView):
 
 # Product Detail View
 class ProductDetailView(views.APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
 
     def get(self, request, isbn_code):
         product = get_object_or_404(Product, isbn_code=isbn_code)
@@ -191,19 +192,29 @@ class ProductDetailView(views.APIView):
         features = product.features_set.all()
         product_serializer = MediahostingProductSerializer(product, partial=True, context={"request": request})
         videohosting_serializer = VideoHostingListSerializer(videohosting, many=True, context={"request": request})
-        favorites = FavoritesSerializer(request.user.favorites.all(), many=True)
-        followings = FollowingSerializer(request.user.observers.all(), many=True)
         features = FeatureSerializer(features, many=True)
 
-        context = {
-            "product": product_serializer.data,
-            "videohosting": videohosting_serializer.data,
-            "favorites": favorites.data,
-            "followings": followings.data,
-            "features": features.data,
-            "published_count": videohosting.filter(access=True).count(),
-            "private_count": videohosting.filter(access=False).count()
-        }
+        if request.user.is_authenticated:
+            favorites = FavoritesSerializer(request.user.favorites.all(), many=True)
+            followings = FollowingSerializer(request.user.observers.all(), many=True)
+            context = {
+                "product": product_serializer.data,
+                "videohosting": videohosting_serializer.data,
+                "favorites": favorites.data,
+                "followings": followings.data,
+                "features": features.data,
+                "published_count": videohosting.filter(access=True).count(),
+                "private_count": videohosting.filter(access=False).count()
+            }
+        else:
+            context = {
+                "product": product_serializer.data,
+                "videohosting": videohosting_serializer.data,
+                "features": features.data,
+                "published_count": videohosting.filter(access=True).count(),
+                "private_count": videohosting.filter(access=False).count()
+            }
+
         return Response(context, status=status.HTTP_200_OK)
 
 
