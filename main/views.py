@@ -8,7 +8,7 @@ from profile.models import Category, Profile
 from .serializers import ( MediahostingMainProductListSerializer, MediahostingProductSerializer,
                            SubCategorySerializer, SupCategorySerializer, FavoritesSerializer, FollowingSerializer,
                            ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer, FeatureSerializer,
-                          )
+                           ChapterSerializer, )
 from accounts.serializers import UserUpdateSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -189,9 +189,11 @@ class ProductDetailView(views.APIView):
     def get(self, request, isbn_code):
         product = get_object_or_404(Product, isbn_code=isbn_code)
         videohosting = product.videohosting_set.all()
+        chapters = product.chapter_set.all()
         features = product.features_set.all()
         product_serializer = MediahostingProductSerializer(product, partial=True, context={"request": request})
         videohosting_serializer = VideoHostingListSerializer(videohosting, many=True, context={"request": request})
+        chapter_serializer = ChapterSerializer(chapters, many=True)
         features = FeatureSerializer(features, many=True)
 
         if request.user.is_authenticated:
@@ -200,6 +202,7 @@ class ProductDetailView(views.APIView):
             context = {
                 "product": product_serializer.data,
                 "videohosting": videohosting_serializer.data,
+                "chapters": chapter_serializer.data,
                 "favorites": favorites.data,
                 "followings": followings.data,
                 "features": features.data,
@@ -210,12 +213,14 @@ class ProductDetailView(views.APIView):
             context = {
                 "product": product_serializer.data,
                 "videohosting": videohosting_serializer.data,
+                "chapters": chapter_serializer.data,
                 "features": features.data,
                 "published_count": videohosting.filter(access=True).count(),
                 "private_count": videohosting.filter(access=False).count()
             }
 
         return Response(context, status=status.HTTP_200_OK)
+
 
 
 # Videohosting View

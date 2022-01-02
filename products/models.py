@@ -101,21 +101,21 @@ class Features(models.Model):
 
 # Раздел
 # =========================================================================
-# class Chapter(models.Model):
-#     album = models.ImageField(verbose_name='Альбом', upload_to='profile/chapters/', blank=True, null=True)
-#     name = models.CharField(verbose_name='Название', max_length=64)
-#     about = models.TextField(verbose_name='Кратко о разделе', max_length=300, blank=True)
-#     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
-#
-#     release = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Релиз')
-#
-#     def __str__(self):
-#         return self.name
-#
-#     class Meta:
-#         verbose_name = "Раздел"
-#         verbose_name_plural = "Разделы"
-#         ordering = ['timestamp']
+class Chapter(models.Model):
+    # album = models.ImageField(verbose_name='Альбом', upload_to='profile/chapters/', blank=True, null=True)
+    name = models.CharField(verbose_name='Название', max_length=64)
+    # about = models.TextField(verbose_name='Кратко о разделе', max_length=300, blank=True)
+    timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Релиз')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Раздел"
+        verbose_name_plural = "Разделы"
+        ordering = ['timestamp']
 
 
 # Видеохостинг
@@ -128,12 +128,13 @@ class Videohosting(models.Model):
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Релиз')
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, verbose_name='Раздел')
 
     # Просмотры
     view = models.IntegerField(verbose_name='Просмотров', default=0)
 
     def __str__(self):
-        return "{} | {}".format(self.product, self.title)
+        return "{} | {}".format(self.chapter, self.title)
 
     class Meta:
         verbose_name = "Видеохостинг"

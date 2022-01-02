@@ -1,6 +1,6 @@
 from rest_framework import serializers
 # from .models import Post
-from products.models import Product, SuperCategory, SubCategory, Videohosting, Features
+from products.models import Product, SuperCategory, SubCategory, Videohosting, Features, Chapter
 from profile.models import Profile
 from accounts.serializers import UserCreateSerializer
 from profile.serializers import SubCategorySerializer
@@ -26,18 +26,25 @@ class MediahostingProductSerializer(serializers.ModelSerializer):
 
 
 
-
+# Videohosting serializers
+# ===============================================================
 class VideoHostingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Videohosting
-        fields = ('id', 'title', 'timestamp', 'access',)
+        fields = ('id', 'chapter', 'title', 'timestamp', 'access',)
 
 
 class VideoHostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Videohosting
-        fields = ('id', 'title', 'frame_url', 'body',)
+        fields = ('id', 'chapter', 'title', 'frame_url', 'body',)
 
+
+
+class ChapterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chapter
+        fields = ('id', 'name', 'timestamp',)
 
 
 class FeatureSerializer(serializers.ModelSerializer):
@@ -93,10 +100,3 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 # ================================================================================
-
-
-# class PostSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Post
-#         fields = ('id', 'title', 'description', 'date_created',)

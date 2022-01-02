@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Product, Features, Videohosting
+from .models import Activity, Product, Chapter, Features, Videohosting
 
 
 # Xарактеристики продукта
@@ -10,6 +10,11 @@ class FeaturesTable(admin.TabularInline):
 
 
 # ===============================================
+
+class ChapterTable(admin.TabularInline):
+    model = Chapter
+    fields = ('product', 'name',)
+    extra = 0
 
 
 # Admin продукта
@@ -23,18 +28,17 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ('production',)
     search_fields = ('title', 'about', 'body', 'category',)
     ordering = ('-timestamp',)
-    inlines = [FeaturesTable,]
+    inlines = [ChapterTable, FeaturesTable,]
     filter_horizontal = ()
 # ===============================================
-
 
 
 # Admin видеохостинга
 
 class VidehostingAdmin(admin.ModelAdmin):
-    list_display = ('title', 'product', 'timestamp',)
+    list_display = ('title', 'product', 'chapter', 'timestamp',)
     fieldsets = (
-        ('Описание', {'fields': ('title', 'product', 'body', 'frame_url', 'access',)}),
+        ('Описание', {'fields': ('title', 'product', 'chapter', 'body', 'frame_url', 'access',)}),
     )
     list_filter = ('access',)
     search_fields = ('title', 'body',)
