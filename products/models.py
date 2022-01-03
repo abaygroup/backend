@@ -122,7 +122,7 @@ class Chapter(models.Model):
 # =========================================================================
 class Videohosting(models.Model):
     title = models.CharField(verbose_name='Название', max_length=64)
-    body = models.TextField(verbose_name='Описание', blank=True)
+    body = RichTextField(verbose_name='Описание', blank=True, null=True)
     frame_url = models.CharField(verbose_name='Ссылка', max_length=255)
     access = models.BooleanField(verbose_name='Доступ к видео', default=True)
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
