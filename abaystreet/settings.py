@@ -15,7 +15,7 @@ DEBUG = config("DEBUG") == "True"
 ALLOWED_HOSTS = ["abaygroup.pythonanywhere.com", "localhost", "127.0.0.1",]
 
 
-# Определение приложения
+# Installed apps
 INSTALLED_APPS = [
     'admin_interface',
     'colorfield',
@@ -34,10 +34,10 @@ INSTALLED_APPS = [
     'phone_field',
     'ckeditor',
 
-    # Приложение
+    # your apps...
 
     'accounts.apps.AccountsConfig',
-    'main.apps.MainConfig',
+    'mediahosting.apps.MainConfig',
     'profile.apps.ProfileConfig',
     'products.apps.ProductsConfig',
 ]
@@ -58,10 +58,10 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 
-# Кастомный пользовательский модель
+# Custom User model
 AUTH_USER_MODEL = 'accounts.User'
 
-# ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -94,31 +94,31 @@ TEMPLATES = [
 WSGI_APPLICATION = 'abaystreet.wsgi.application'
 
 
-# База данных
+# Database
 # ===============================================================
 # Настройка sqlite
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'abaystreet.sqlite3',
-    }
-}
-
-# Настройка Postgres
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': config('DB_NAME'),
-#         'USER': config('DB_USER'),
-#         'PASSWORD': config('DB_PASSWORD'),
-#         'HOST': config('DB_HOST'),
-#         'PORT': config('DB_PORT')
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'abaystreet.sqlite3',
 #     }
 # }
+
+# Settings PostgreSQL
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT')
+    }
+}
 # ===============================================================
 
 
-# Подтверждение пароля
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -135,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Интернационализация
+# i18n
 LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'Asia/Almaty'
@@ -147,7 +147,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Статические файлы (CSS, JavaScript, изображения)
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/static')]
@@ -160,7 +160,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Настройка Email 
+# Settings Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -169,18 +169,20 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 
-# Настройка Simple JWT
+# Settings Simple JWT
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-# Настройка Djoser 
-DOMAIN = ('mediahosting.abaystreet.com')
+# Settings Djoser
+# For deploy
+# DOMAIN = ('mediahosting.abaystreet.com')
+# For localhost
+DOMAIN = ('localhost:3000')
 
-# DOMAIN = ('localhost:3000')
-SITE_NAME = ('abaystreet')
+SITE_NAME = ('Mediahosting')
 
 DJOSER = {
     'LOGIN_FIELD': 'email',

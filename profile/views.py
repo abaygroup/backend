@@ -10,7 +10,7 @@
 #
 # from .serializers import DashboardSerializer, DashboardFormSerializer, DashboardOverviewSerializer, NotificationSerializer, NotificationFormSerializer
 # from products.serializers import ( ActivitySerializer, ProductOverviewSerializer )
-# from main.serializers import Post, PostSerializer
+# from mediahosting.serializers import Post, PostSerializer
 #
 # from django.utils import timezone
 #

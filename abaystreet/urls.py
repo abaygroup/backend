@@ -10,7 +10,7 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
 
-    path('api/', include('main.urls')),
+    path('api/', include('mediahosting.urls')),
     # path('', include('profile.urls')),
     path('accounts/', include('accounts.urls')),
 ]
