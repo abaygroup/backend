@@ -45,7 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     birthday = models.DateField(verbose_name=_('Дата рождение'), blank=True, null=True)
 
     is_active = models.BooleanField(verbose_name=_('Статус активность'), help_text='Это статус активности пользователя.', default=True)
-    is_staff = models.BooleanField(verbose_name=_('Статус партнера'), help_text='Статус бренда как нашего партнера.', default=False)
+    is_staff = models.BooleanField(verbose_name=_('Статус партнера'), help_text='Статус нашего партнера.', default=False)
 
     objects = UserManager()
 

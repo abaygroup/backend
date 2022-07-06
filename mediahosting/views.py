@@ -20,7 +20,7 @@ class MainAPIView(views.APIView):
     def get(self, request):
         future_products = Product.objects.filter(production=False)[:4]
         last_products = Product.objects.filter(production=True)[:8]
-        authors = Profile.objects.all()[:5]
+        authors = Profile.objects.filter(branding=True)[:6]
 
         last_products_serializer = MediahostingMainProductListSerializer(last_products, many=True, context={"request": request})
         future_products_serializer = MediahostingMainProductListSerializer(future_products, many=True, context={"request": request})
@@ -154,6 +154,7 @@ class FollowView(views.APIView):
 # Profile Page View
 class ProfileView(views.APIView):
     parser_classes = [MultiPartParser, FormParser, ]
+
 
     def get(self, request, username):
         user = get_object_or_404(User, username=username)

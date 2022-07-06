@@ -97,24 +97,24 @@ WSGI_APPLICATION = 'abaystreet.wsgi.application'
 # Database
 # ===============================================================
 # Settings SQLite
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'abaystreet.sqlite3',
-    }
-}
-
-# Settings PostgreSQL
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': config('DB_NAME'),
-#         'USER': config('DB_USER'),
-#         'PASSWORD': config('DB_PASSWORD'),
-#         'HOST': config('DB_HOST'),
-#         'PORT': config('DB_PORT')
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'abaystreet.sqlite3',
 #     }
 # }
+
+# Settings PostgreSQL
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT')
+    }
+}
 # ===============================================================
 
 
@@ -178,9 +178,9 @@ SIMPLE_JWT = {
 
 # Settings Djoser
 # For deploy
-DOMAIN = ('mediahosting.abaystreet.com')
+# DOMAIN = ('mediahosting.abaystreet.com')
 # For localhost
-# DOMAIN = ('localhost:3000')
+DOMAIN = ('localhost:3000')
 
 SITE_NAME = ('Mediahosting')
 
