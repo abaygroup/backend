@@ -22,8 +22,8 @@ urlpatterns += [re_path(r'^static/(?P<path>.*)$', serve, {'document_root': setti
 # if settings.DEBUG:
 #     urlpatterns += [re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT,}),]
 #     urlpatterns += [re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT,}),]
-#
-#
+
+
 # if not settings.DEBUG:
 #     urlpatterns += [re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT,}),]
 #     urlpatterns += [re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT,}),]

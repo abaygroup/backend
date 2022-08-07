@@ -15,7 +15,8 @@ DEBUG = config("DEBUG") == "True"
 ALLOWED_HOSTS = ["abaygroup.pythonanywhere.com", "localhost", "127.0.0.1",]
 
 
-# Installed apps
+# Установленные приложение
+# ===============================================================
 INSTALLED_APPS = [
     'admin_interface',
     'colorfield',
@@ -33,8 +34,9 @@ INSTALLED_APPS = [
     'djoser',
     'phone_field',
     'ckeditor',
+    'storages',
 
-    # your apps...
+    # ваше приложение...
 
     'accounts.apps.AccountsConfig',
     'mediahosting.apps.MainConfig',
@@ -42,9 +44,10 @@ INSTALLED_APPS = [
     'products.apps.ProductsConfig',
 ]
 
-X_FRAME_OPTIONS='SAMEORIGIN'
+
 
 # Django REST Framework
+# ===============================================================
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -54,14 +57,19 @@ REST_FRAMEWORK = {
     ),
 }
 
+
 # Django CORS Headers
+# ===============================================================
 CORS_ORIGIN_ALLOW_ALL = True
+X_FRAME_OPTIONS='SAMEORIGIN'
 
 
-# Custom User model
+# Кастомный модель User
 AUTH_USER_MODEL = 'accounts.User'
 
+
 # Middleware
+# ===============================================================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -94,9 +102,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'abaystreet.wsgi.application'
 
 
-# Database
+# База данных
 # ===============================================================
-# Settings SQLite
+# Настройка SQLite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -104,7 +112,8 @@ DATABASES = {
     }
 }
 
-# Settings PostgreSQL
+# Настройка PostgreSQL
+# ===============================================================
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -118,7 +127,8 @@ DATABASES = {
 # ===============================================================
 
 
-# Password validation
+# Валидация пароля
+# ===============================================================
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -136,6 +146,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # i18n
+# ===============================================================
 LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'Asia/Almaty'
@@ -147,20 +158,48 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/static')]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Файлы (CSS, JavaScript, Images)
+# ===============================================================
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/static')]
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# AWS
+# ===============================================================
+AWS_S3_ACCESS_KEY_ID = 'AKIAZDLKPPWYJC3IDBWS'
+AWS_S3_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'abaystreet-filestorage'
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_FILE_OVERWRITE = False
+
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+DEFAULT_FILE_STORAGE = 'abaystreet.storages.MediaStore'
+
+AWS_LOCATION = 'static'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'templates/static')
+]
+
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+
+
+
 
 
 # Тип поля первичного ключа по умолчанию
+# ===============================================================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Settings Email
+# Настройка Email
+# ===============================================================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -169,19 +208,26 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 
-# Settings Simple JWT
+
+
+# Настройка Simple JWT
+# ===============================================================
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-# Settings Djoser
-# For deploy
-# DOMAIN = ('mediahosting.abaystreet.com')
-# For localhost
-DOMAIN = ('localhost:3000')
 
+# Настройка Djoser
+# ===============================================================
+# На деплой (Production)
+
+# DOMAIN = ('mediahosting.abaystreet.com')
+
+# На деплой (localhost)
+
+DOMAIN = ('localhost:3000')
 SITE_NAME = ('Mediahosting')
 
 DJOSER = {
