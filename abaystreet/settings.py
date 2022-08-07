@@ -104,26 +104,18 @@ WSGI_APPLICATION = 'abaystreet.wsgi.application'
 
 # База данных
 # ===============================================================
-# Настройка SQLite
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'abaystreet.sqlite3',
-    }
-}
-
 # Настройка PostgreSQL
 # ===============================================================
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': config('DB_NAME'),
-#         'USER': config('DB_USER'),
-#         'PASSWORD': config('DB_PASSWORD'),
-#         'HOST': config('DB_HOST'),
-#         'PORT': config('DB_PORT')
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT')
+    }
+}
 # ===============================================================
 
 
@@ -161,18 +153,11 @@ USE_TZ = True
 
 # Файлы (CSS, JavaScript, Images)
 # ===============================================================
-# STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/static')]
-
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 # AWS
 # ===============================================================
-AWS_S3_ACCESS_KEY_ID = 'AKIAZDLKPPWYJC3IDBWS'
-AWS_S3_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'abaystreet-filestorage'
+AWS_S3_ACCESS_KEY_ID = config("AWS_S3_ACCESS_KEY_ID")
+AWS_S3_SECRET_ACCESS_KEY = config("AWS_S3_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
 AWS_DEFAULT_ACL = 'public-read'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
