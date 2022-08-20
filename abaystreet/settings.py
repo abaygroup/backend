@@ -104,6 +104,7 @@ WSGI_APPLICATION = 'abaystreet.wsgi.application'
 
 # База данных
 # ===============================================================
+# Настройка sqlite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -214,12 +215,11 @@ SIMPLE_JWT = {
 # Настройка Djoser
 # ===============================================================
 # На деплой (Production)
-
-# DOMAIN = ('mediahosting.abaystreet.com')
+DOMAIN = ('mediahosting.vercel.app')
 
 # На деплой (localhost)
+# DOMAIN = ('localhost:3000')
 
-DOMAIN = ('localhost:3000')
 SITE_NAME = ('Mediahosting')
 
 DJOSER = {
