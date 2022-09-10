@@ -1,20 +1,6 @@
 from rest_framework import serializers
-from .models import Profile, Notification, SubCategory, SuperCategory
 from accounts.serializers import UserCreateSerializer
 
-
-# Serializer для Категорий
-# ========================================================
-class SuperCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SuperCategory
-        fields = ('id', 'name', 'slug',)
-
-class SubCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SubCategory
-        fields = ('id', 'name', 'slug',)
-# ========================================================
 #
 #
 # # Serializer для панель управления

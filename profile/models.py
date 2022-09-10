@@ -3,52 +3,6 @@ from accounts.models import User
 from django.core.exceptions import ValidationError
 
 
-# Категория
-class Category(models.Model):
-    name = models.CharField(verbose_name='Название', max_length=255, unique=True)
-    slug = models.SlugField(verbose_name='Ключовой адрес', max_length=255, unique=True)
-    image = models.ImageField(verbose_name='Изображение', blank=True, null=True, upload_to='profile/categories/')
-    super_category = models.ForeignKey('SuperCategory', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Надкатегория')
-
-
-class SuperCategoryManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(super_category__isnull=True)
-
-
-class SuperCategory(Category):
-    objects = SuperCategoryManager()
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        proxy = True
-        ordering = ('name',)
-        verbose_name = 'Надкатегория'
-        verbose_name_plural = 'Надкатегорий'
-
-
-class SubCategoryManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(super_category__isnull=False)
-
-
-class SubCategory(Category):
-    objects = SubCategoryManager()
-
-    def __str__(self):
-        return '{} - {}'.format(self.super_category.name, self.name)
-
-    class Meta:
-        proxy = True
-        ordering = ('super_category__name', 'name')
-        verbose_name = 'Подкатегория'
-        verbose_name_plural = 'Подкатегорий'
-
-# =====================================================================================
-
-
 # Модель Profile
 # =====================================================================================
 class Profile(models.Model):

@@ -1,15 +1,13 @@
 from rest_framework import serializers
-# from .models import Post
-from products.models import Product, SuperCategory, SubCategory, Videohosting, Features, Chapter
-from profile.models import Profile
-from accounts.serializers import UserCreateSerializer
-from profile.serializers import SubCategorySerializer
+from products.models import Product, Videohosting, Features, Chapter, SuperCategory, SubCategory
+from accounts.serializers import UserSerializer
+from products.serializers import SubCategorySerializer
 
 
 # Product
 # ==========================================================================
 class MediahostingMainProductListSerializer(serializers.ModelSerializer):
-    authors = UserCreateSerializer(read_only=True, many=True)
+    authors = UserSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
@@ -17,13 +15,12 @@ class MediahostingMainProductListSerializer(serializers.ModelSerializer):
 
 
 class MediahostingProductSerializer(serializers.ModelSerializer):
-    owner = UserCreateSerializer(read_only=True)
+    owner = UserSerializer(read_only=True)
     subcategory = SubCategorySerializer(read_only=True)
 
     class Meta:
         model = Product
         fields = ('id', 'title', 'brand', 'subcategory', 'album', 'about', 'body', 'isbn_code', 'production', 'owner', 'timestamp', 'last_update',)
-
 
 
 # Videohosting serializers
@@ -38,7 +35,6 @@ class VideoHostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Videohosting
         fields = ('id', 'chapter', 'title', 'frame_url', 'body',)
-
 
 
 class ChapterSerializer(serializers.ModelSerializer):
@@ -59,20 +55,21 @@ class FeatureSerializer(serializers.ModelSerializer):
 class SupCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SuperCategory
-        fields = "__all__"
+        fields = '__all__'
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory
-        fields = "__all__"
+        fields = '__all__'
 
 # ================================================================================
+
 
 # Favorite and Following Serializer
 # ================================================================================
 class FollowingSerializer(serializers.ModelSerializer):
-    authors = UserCreateSerializer(read_only=True, many=True)
+    authors = UserSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
@@ -80,23 +77,10 @@ class FollowingSerializer(serializers.ModelSerializer):
 
 
 class FavoritesSerializer(serializers.ModelSerializer):
-    authors = UserCreateSerializer(read_only=True, many=True)
+    authors = UserSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
         fields = ('id', 'title', 'brand', 'album', 'isbn_code', 'authors', 'observers', 'favorites',)
-
-# ================================================================================
-
-
-# Profile
-# ================================================================================
-class ProfileSerializer(serializers.ModelSerializer):
-    user = UserCreateSerializer(read_only=True)
-
-    class Meta:
-        model = Profile
-        fields = ('id', 'user', 'avatar', 'branding',)
-
 
 # ================================================================================

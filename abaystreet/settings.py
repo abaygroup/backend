@@ -2,20 +2,18 @@ import os
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
-
+from django.utils.translation import gettext_lazy as _
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ПРЕДУПРЕЖДЕНИЕ О БЕЗОПАСНОСТИ: держите секретный ключ, используемый в производстве, в секрете!
+
 SECRET_KEY = config("SECRET_KEY")
 
-# ПРЕДУПРЕЖДЕНИЕ О БЕЗОПАСНОСТИ: не запускайте в продакшене с включенной отладкой!
 DEBUG = config("DEBUG") == "True"
 
 
 ALLOWED_HOSTS = ["abaygroup.pythonanywhere.com", "localhost", "127.0.0.1",]
 
 
-# Установленные приложение
 # ===============================================================
 INSTALLED_APPS = [
     'admin_interface',
@@ -32,21 +30,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'djoser',
-    'phone_field',
     'ckeditor',
-    'storages',
 
-    # ваше приложение...
+    # apps...
 
     'accounts.apps.AccountsConfig',
-    'mediahosting.apps.MainConfig',
-    'profile.apps.ProfileConfig',
     'products.apps.ProductsConfig',
+    'mediahosting.apps.MainConfig',
 ]
 
 
-
-# Django REST Framework
 # ===============================================================
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -58,22 +51,22 @@ REST_FRAMEWORK = {
 }
 
 
-# Django CORS Headers
 # ===============================================================
 CORS_ORIGIN_ALLOW_ALL = True
 X_FRAME_OPTIONS='SAMEORIGIN'
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 
-# Кастомный модель User
 AUTH_USER_MODEL = 'accounts.User'
 
 
-# Middleware
 # ===============================================================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -102,9 +95,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'abaystreet.wsgi.application'
 
 
-# База данных
 # ===============================================================
-# Настройка sqlite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -112,7 +103,6 @@ DATABASES = {
     }
 }
 
-# Настройка PostgreSQL
 # ===============================================================
 # DATABASES = {
 #     'default': {
@@ -145,7 +135,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# i18n
 # ===============================================================
 LANGUAGE_CODE = 'ru-RU'
 
@@ -157,41 +146,28 @@ USE_L10N = True
 
 USE_TZ = True
 
+LANGUAGES = (
+    ('en', _('English')),
+    ('ru', _('Russian')),
+    ('kk', _('Kazakh')),
+)
+
+LOCALE_PATHS = [ os.path.join(BASE_DIR, 'locale')]
 
 
-# Файлы (CSS, JavaScript, Images)
 # ===============================================================
-# AWS
-# ===============================================================
-AWS_S3_ACCESS_KEY_ID = config("AWS_S3_ACCESS_KEY_ID")
-AWS_S3_SECRET_ACCESS_KEY = config("AWS_S3_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
-AWS_DEFAULT_ACL = 'public-read'
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
-AWS_QUERYSTRING_AUTH = False
-AWS_S3_FILE_OVERWRITE = False
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/static')]
 
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-DEFAULT_FILE_STORAGE = 'abaystreet.storages.MediaStore'
-
-AWS_LOCATION = 'static'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'templates/static')
-]
-
-STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-
-
-
-# Тип поля первичного ключа по умолчанию
 # ===============================================================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Настройка Email
 # ===============================================================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -201,23 +177,17 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 
-
-
-# Настройка Simple JWT
 # ===============================================================
 SIMPLE_JWT = {
-   'AUTH_HEADER_TYPES': ('JWT',),
-   'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
-   'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('JWT',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'BLACKLIST_AFTER_ROTATION': False,
 }
 
 
-# Настройка Djoser
 # ===============================================================
-# На деплой (Production)
-DOMAIN = ('mediahosting.vercel.app')
-
-# На деплой (localhost)
+DOMAIN = ('home-mediahosting.vercel.app')
 # DOMAIN = ('localhost:3000')
 
 SITE_NAME = ('Mediahosting')
@@ -233,13 +203,12 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'accounts/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'accounts/activate/{uid}/{token}',
-    # 'SEND_ACTIVATION_EMAIL': True,
 
     'SERIALIZERS': {
-        'user_create': 'accounts.serializers.UserCreateSerializer',
-        'user': 'accounts.serializers.UserCreateSerializer',
-        'current_user': 'accounts.serializers.UserCreateSerializer',
-        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+        'user_create': 'accounts.serializers.UserSerializer',
+        'user': 'accounts.serializers.UserSerializer',
+        'current_user': 'accounts.serializers.UserSerializer',
+        'user_delete': 'djoser.serializers.UserSerializer',
     }
 }
 

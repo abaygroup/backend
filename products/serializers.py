@@ -1,12 +1,25 @@
 from rest_framework import serializers
-from accounts.serializers import UserCreateSerializer
-from .models import Activity, Product, Features, Videohosting
-from profile.serializers import SuperCategorySerializer, SubCategorySerializer
+from accounts.serializers import UserSerializer
+from .models import Activity, Product, Features, Videohosting, SuperCategory, SubCategory
 
-# Serializer для Продукт
+
+# ========================================================
+class SuperCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SuperCategory
+        fields = ('id', 'name', 'slug',)
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = ('id', 'name', 'slug', )
+# ========================================================
+
+
 # ========================================================
 class ProductOverviewSerializer(serializers.ModelSerializer):
-    owner = UserCreateSerializer(read_only=True)
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = Product
@@ -14,7 +27,7 @@ class ProductOverviewSerializer(serializers.ModelSerializer):
 
 
 class ProductListSerializer(serializers.ModelSerializer):
-    owner = UserCreateSerializer(read_only=True)
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = Product
@@ -22,10 +35,10 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
-    owner = UserCreateSerializer(read_only=True)
+    owner = UserSerializer(read_only=True)
     category = SuperCategorySerializer(read_only=True)
     subcategory = SubCategorySerializer(read_only=True)
-    observers = UserCreateSerializer(read_only=True, many=True)
+    observers = UserSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
@@ -33,7 +46,6 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 # ========================================================
 
 
-# Serializer для Характеристика и Дополнительный иллюстраций
 # ========================================================
 class VideohostingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,20 +56,12 @@ class VideohostingSerializer(serializers.ModelSerializer):
 # ========================================================
 
 
-
-# Serializer для Характеристика и Дополнительный иллюстраций
-# ===========================================================
 class FeatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Features
         fields = ('id', 'label', 'value')
 
 
-
-
-
-# Serializer для Активность
-# ========================================================
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity

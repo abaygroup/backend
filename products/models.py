@@ -2,12 +2,57 @@ from django.db import models
 import uuid
 import datetime
 from django.utils import timezone
-from profile.models import SuperCategory, SubCategory
 from accounts.models import User
 from ckeditor.fields import RichTextField
 
 
-# Недавняя активность
+# Category
+class Category(models.Model):
+    name = models.CharField(verbose_name='Название', max_length=255, unique=True)
+    slug = models.SlugField(verbose_name='Ключовой адрес', max_length=255, unique=True)
+    image = models.ImageField(verbose_name='Изображение', blank=True, null=True, upload_to='profile/categories/')
+    super_category = models.ForeignKey('SuperCategory', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Надкатегория')
+
+
+class SuperCategoryManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(super_category__isnull=True)
+
+
+class SuperCategory(Category):
+    objects = SuperCategoryManager()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        proxy = True
+        ordering = ('name',)
+        verbose_name = 'Надкатегория'
+        verbose_name_plural = 'Надкатегорий'
+
+
+class SubCategoryManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(super_category__isnull=False)
+
+
+class SubCategory(Category):
+    objects = SubCategoryManager()
+
+    def __str__(self):
+        return '{} - {}'.format(self.super_category.name, self.name)
+
+    class Meta:
+        proxy = True
+        ordering = ('super_category__name', 'name')
+        verbose_name = 'Подкатегория'
+        verbose_name_plural = 'Подкатегорий'
+
+# =====================================================================================
+
+
+# Activity
 # =============================================================================================================
 class Activity(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -23,10 +68,10 @@ class Activity(models.Model):
         verbose_name_plural = 'Активности'
 
 
-
-# Модель Product
+# Product
 # =========================================================================
 class Product(models.Model):
+
     # Описание
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     title = models.CharField(verbose_name='Заголовка', max_length=40)
@@ -54,7 +99,6 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
-
     def save(self, *args, **kwargs):
         instance = self.title
         activity = Activity.objects.create(owner=self.owner, message="Вы импортировали продукт {}".format(instance),
@@ -63,7 +107,6 @@ class Product(models.Model):
             activity.save()
 
         super(Product, self).save(*args, **kwargs)
-
 
     def delete(self, *args, **kwargs):
         instance = self.title
@@ -74,15 +117,13 @@ class Product(models.Model):
 
         super(Product, self).delete(*args, **kwargs)
 
-
     class Meta:
         verbose_name = 'Релиз'
         verbose_name_plural = 'Релизы'
         ordering = ('-timestamp',)
 
 
-
-# Xарактеристика
+# Features
 # =============================================================================================================
 class Features(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Релиз")
@@ -90,23 +131,19 @@ class Features(models.Model):
     label = models.CharField(verbose_name="Названия", max_length=64)
     value = models.CharField(verbose_name="Значение", max_length=64, null=True, blank=True)
 
-
     def __str__(self):
-        return  "{}: {}".format(self.category.name, self.product)
+        return "{}: {}".format(self.category.name, self.product)
 
     class Meta:
         verbose_name = "Xарактеристика"
         verbose_name_plural = "Xарактеристики"
 
 
-# Раздел
+# Chapter
 # =========================================================================
 class Chapter(models.Model):
-    # album = models.ImageField(verbose_name='Альбом', upload_to='profile/chapters/', blank=True, null=True)
     name = models.CharField(verbose_name='Название', max_length=64)
-    # about = models.TextField(verbose_name='Кратко о разделе', max_length=300, blank=True)
     timestamp = models.DateTimeField(verbose_name='Дата выхода', auto_now_add=True)
-
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Релиз')
 
     def __str__(self):
@@ -118,7 +155,6 @@ class Chapter(models.Model):
         ordering = ['timestamp']
 
 
-# Видеохостинг
 # =========================================================================
 class Videohosting(models.Model):
     title = models.CharField(verbose_name='Название', max_length=64)

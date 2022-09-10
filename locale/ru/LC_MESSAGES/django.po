@@ -1,0 +1,234 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-10 21:39+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\abaystreet\settings.py:149
+msgid "English"
+msgstr ""
+
+#: .\abaystreet\settings.py:150
+msgid "Russian"
+msgstr "Русский"
+
+#: .\abaystreet\settings.py:151
+msgid "Kazakh"
+msgstr "Қазақша"
+
+#: .\accounts\admin.py:14 .\accounts\admin.py:36
+msgid "Personal information"
+msgstr "Личная информация"
+
+#: .\accounts\admin.py:15
+msgid "Permissions"
+msgstr "Разрешения"
+
+#: .\accounts\admin.py:34
+msgid "User direction"
+msgstr "Руководство пользователя"
+
+#: .\accounts\apps.py:8
+msgid "Account"
+msgstr "Аккаунт"
+
+#: .\accounts\apps.py:9
+msgid "Accounts"
+msgstr "Аккаунты"
+
+#: .\accounts\models.py:10
+msgid "There must be a user name"
+msgstr "Там должно быть имя пользователя"
+
+#: .\accounts\models.py:12
+msgid "The user must have an email address"
+msgstr "У пользователя должен быть адрес электронной почты"
+
+#: .\accounts\models.py:14
+msgid "There must be a name"
+msgstr "Должно быть какое-то имя"
+
+#: .\accounts\models.py:34
+msgid "Not defined"
+msgstr "Не определен"
+
+#: .\accounts\models.py:35
+msgid "Male"
+msgstr "Мужской"
+
+#: .\accounts\models.py:36
+msgid "Famale"
+msgstr "Женский"
+
+#: .\accounts\models.py:39
+msgid "username"
+msgstr "Имя пользователя"
+
+#: .\accounts\models.py:40
+msgid "email address"
+msgstr "Адрес электронной почты"
+
+#: .\accounts\models.py:41
+msgid "full name"
+msgstr "Полное имя"
+
+#: .\accounts\models.py:42
+msgid "gender"
+msgstr "Пол"
+
+#: .\accounts\models.py:43
+msgid "phone"
+msgstr "Телефон"
+
+#: .\accounts\models.py:44
+msgid "birthday"
+msgstr "День рождения"
+
+#: .\accounts\models.py:46
+msgid "staff status"
+msgstr "Статус персонала"
+
+#: .\accounts\models.py:48
+msgid "Designates whether the user can log into this admin site."
+msgstr "Указывает, может ли пользователь войти на этот сайт администратора."
+
+#: .\accounts\models.py:51
+msgid "active"
+msgstr "Активный"
+
+#: .\accounts\models.py:54
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+"Указывает, следует ли рассматривать этого пользователя как активного. "
+"Снимите этот флажок вместо удаления учетных записей."
+
+#: .\accounts\models.py:58
+msgid "date joined"
+msgstr "Дата вступления"
+
+#: .\accounts\models.py:76 .\accounts\models.py:84 .\accounts\models.py:126
+#: .\accounts\models.py:167
+msgid "User"
+msgstr "Пользователь"
+
+#: .\accounts\models.py:77
+msgid "Users"
+msgstr "Пользователи"
+
+#: .\accounts\models.py:86 .\accounts\models.py:115
+msgid "Price"
+msgstr "Цена"
+
+#: .\accounts\models.py:87
+msgid "Payment date"
+msgstr "Дата платежа"
+
+#: .\accounts\models.py:93
+msgid "Payment history"
+msgstr ""
+
+#: .\accounts\models.py:94
+msgid "Payment histories"
+msgstr "История платежей"
+
+#: .\accounts\models.py:102
+msgid "Free"
+msgstr "Бесплатно"
+
+#: .\accounts\models.py:103
+msgid "Premium"
+msgstr "Индивидуальная подписка"
+
+#: .\accounts\models.py:104
+msgid "Premium for duo"
+msgstr "Premium для двоих"
+
+#: .\accounts\models.py:105
+msgid "Premium for group"
+msgstr "Premium для компании"
+
+#: .\accounts\models.py:106
+msgid "Premium for students"
+msgstr "Premium для студентов"
+
+#: .\accounts\models.py:109
+msgid "Slug"
+msgstr "Ключ"
+
+#: .\accounts\models.py:111
+msgid "Membership type"
+msgstr "Типы тарифный план"
+
+#: .\accounts\models.py:121 .\accounts\models.py:130
+msgid "Membership"
+msgstr "Тарифный план"
+
+#: .\accounts\models.py:122
+msgid "Memberships"
+msgstr "Тарифный планы"
+
+#: .\accounts\models.py:139
+msgid "User membership"
+msgstr "Тарифный план в пользователях"
+
+#: .\accounts\models.py:140
+msgid "User memberships"
+msgstr "Тарифный планы в пользователях"
+
+#: .\accounts\models.py:145
+msgid "Active"
+msgstr "Активный"
+
+#: .\accounts\models.py:151
+msgid "Subscription"
+msgstr "Подписка"
+
+#: .\accounts\models.py:152
+msgid "Subscriptions"
+msgstr "Подписки"
+
+#: .\accounts\models.py:165
+msgid "The maximum file size should be {}MB"
+msgstr "Максимальный размер файла должен составлять {}МБ"
+
+#: .\accounts\models.py:168
+msgid "Image"
+msgstr "Изображение"
+
+#: .\accounts\models.py:168
+msgid "The maximum file size is 2MB"
+msgstr "Максимальный размер файла составляет 2 МБ"
+
+#: .\accounts\models.py:169
+msgid "About me"
+msgstr "Обо мне"
+
+#: .\accounts\models.py:170
+msgid "Address"
+msgstr "Адрес"
+
+#: .\accounts\models.py:176
+msgid "Profile"
+msgstr "Профиль"
+
+#: .\accounts\models.py:177
+msgid "Profiles"
+msgstr "Профили"

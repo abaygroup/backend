@@ -1,15 +1,14 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import views, status, permissions
 from rest_framework.response import Response
-
-from accounts.models import User
-from products.models import Product, SuperCategory, SubCategory, Videohosting
-from profile.models import Category, Profile
-from .serializers import ( MediahostingMainProductListSerializer, MediahostingProductSerializer,
-                           SubCategorySerializer, SupCategorySerializer, FavoritesSerializer, FollowingSerializer,
-                           ProfileSerializer, VideoHostingListSerializer, VideoHostingSerializer, FeatureSerializer,
-                           ChapterSerializer, )
-from accounts.serializers import UserUpdateSerializer
+from django.shortcuts import get_object_or_404
+from accounts.models import User, Profile
+from products.models import Product, SuperCategory, SubCategory, Videohosting, Category
+from .serializers import (
+    MediahostingMainProductListSerializer, MediahostingProductSerializer, FavoritesSerializer, FollowingSerializer,
+    SupCategorySerializer, SubCategorySerializer, VideoHostingListSerializer, ChapterSerializer, FeatureSerializer,
+    VideoHostingSerializer
+)
+from accounts.serializers import ProfileSerializer, UserUpdateSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
@@ -53,7 +52,6 @@ class MainAPIView(views.APIView):
         return Response(context, status=status.HTTP_200_OK)
 
 
-
 # Search Page View
 class SearchView(views.APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
@@ -69,7 +67,6 @@ class SearchView(views.APIView):
             "sub_categories": sub_categories_serializer.data
         }
         return Response(context, status=status.HTTP_200_OK)
-
 
 
 class CategoryDetailView(views.APIView):
@@ -126,35 +123,34 @@ class FavoritesView(views.APIView):
         return Response(favorites_products.data, status=status.HTTP_200_OK)
 
 
-class AddToFavorite(views.APIView):
-
-    def post(self, request, isbn_code):
-        product = get_object_or_404(Product, isbn_code=isbn_code)
-        if product.favorites.filter(id=request.user.id).exists():
-            product.favorites.remove(request.user)
-            return Response({"message": "{} deleted".format(product.title)}, status=status.HTTP_200_OK)
-        else:
-            product.favorites.add(request.user)
-            return Response({"message": "{} added".format(product.title)}, status=status.HTTP_200_OK)
-
-
-class FollowView(views.APIView):
-
-    def post(self, request, isbn_code):
-        product = get_object_or_404(Product, isbn_code=isbn_code)
-        if product.observers.filter(id=request.user.id).exists():
-            product.observers.remove(request.user)
-            return Response({"message": "You unfollow {}".format(product.title)}, status=status.HTTP_200_OK)
-        else:
-            product.observers.add(request.user)
-            return Response({"message": "You follow {}".format(product.title)}, status=status.HTTP_200_OK)
-
-
-
+# class AddToFavorite(views.APIView):
+#
+#     def post(self, request, isbn_code):
+#         product = get_object_or_404(Product, isbn_code=isbn_code)
+#         if product.favorites.filter(id=request.user.id).exists():
+#             product.favorites.remove(request.user)
+#             return Response({"message": "{} deleted".format(product.title)}, status=status.HTTP_200_OK)
+#         else:
+#             product.favorites.add(request.user)
+#             return Response({"message": "{} added".format(product.title)}, status=status.HTTP_200_OK)
+#
+#
+# class FollowView(views.APIView):
+#
+#     def post(self, request, isbn_code):
+#         product = get_object_or_404(Product, isbn_code=isbn_code)
+#         if product.observers.filter(id=request.user.id).exists():
+#             product.observers.remove(request.user)
+#             return Response({"message": "You unfollow {}".format(product.title)}, status=status.HTTP_200_OK)
+#         else:
+#             product.observers.add(request.user)
+#             return Response({"message": "You follow {}".format(product.title)}, status=status.HTTP_200_OK)
+#
+#
+#
 # Profile Page View
 class ProfileView(views.APIView):
     parser_classes = [MultiPartParser, FormParser, ]
-
 
     def get(self, request, username):
         user = get_object_or_404(User, username=username)
@@ -180,7 +176,6 @@ class ProfileView(views.APIView):
             return Response({"success": "Profile edited successfully"})
 
         return Response({"error": "Error to profile edited!"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 # Product Detail View
@@ -221,7 +216,6 @@ class ProductDetailView(views.APIView):
             }
 
         return Response(context, status=status.HTTP_200_OK)
-
 
 
 # Videohosting View

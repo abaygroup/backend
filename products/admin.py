@@ -1,15 +1,31 @@
 from django.contrib import admin
-from .models import Activity, Product, Chapter, Features, Videohosting
+from .models import Activity, Product, Chapter, Features, Videohosting, SubCategory, SuperCategory
 
 
-# Xарактеристики продукта
+class SubCategoryInline(admin.TabularInline):
+    model = SubCategory
+
+
+class SuperCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+    exclude = ('super_category',)
+    fieldsets = (
+        ('Описание категорий', {'fields': ('name', 'slug',)}),
+    )
+    inlines = (SubCategoryInline,)
+    filter_horizontal = ()
+# =================================================================
+
+
+# Features products
 class FeaturesTable(admin.TabularInline):
     model = Features
     fields = ('product', 'category', 'label', 'value')
     extra = 0
 
-
 # ===============================================
+
 
 class ChapterTable(admin.TabularInline):
     model = Chapter
@@ -17,7 +33,7 @@ class ChapterTable(admin.TabularInline):
     extra = 0
 
 
-# Admin продукта
+# Admin products
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('title', 'owner', 'timestamp', 'last_update')
     fieldsets = (
@@ -33,8 +49,6 @@ class ProductAdmin(admin.ModelAdmin):
 # ===============================================
 
 
-# Admin видеохостинга
-
 class VidehostingAdmin(admin.ModelAdmin):
     list_display = ('title', 'product', 'chapter', 'timestamp',)
     fieldsets = (
@@ -47,8 +61,13 @@ class VidehostingAdmin(admin.ModelAdmin):
 # ===============================================
 
 
+admin.site.register(SuperCategory, SuperCategoryAdmin)
+admin.site.register(SubCategory)
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Videohosting, VidehostingAdmin)
 
 admin.site.register(Activity)
 admin.site.register(Features)
+
+
